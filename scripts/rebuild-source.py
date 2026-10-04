@@ -253,7 +253,12 @@ def rewrite_views(sql: str) -> list[tuple[str, str]]:
             continue
         body = re.sub(r"_utf8mb4(?=')", "", body, flags=re.I)
         body = body.replace("`", '"')
-        body = re.sub(r"\bIF\s*\(", "if(", body, flags=re.I)
+        body = re.sub(
+            r"\bIF\s*\(\s*cu\.active\s*,\s*'active'\s*,\s*''\s*\)",
+            "CASE WHEN cu.active THEN 'active' ELSE '' END",
+            body,
+            flags=re.I,
+        )
         body = re.sub(r"\bUCASE\s*\(", "upper(", body, flags=re.I)
         body = re.sub(r"\bLCASE\s*\(", "lower(", body, flags=re.I)
         # Rewrite MySQL's GROUP_CONCAT(expr SEPARATOR sep) form to SQLite's
@@ -276,9 +281,27 @@ def rewrite_views(sql: str) -> list[tuple[str, str]]:
             pos = close + 1
         chunks.append(body[pos:])
         body = "".join(chunks)
-        body = re.sub(r"\bCONCAT\s*\(", "concat(", body, flags=re.I)
+        body = rewrite_concat(body)
         result.append((name, " ".join(body.split())))
     return result
+
+
+def rewrite_concat(sql: str) -> str:
+    """Replace MySQL CONCAT calls with SQLite's portable concatenation operator."""
+    token = re.compile(r"\bCONCAT\s*\(", re.I)
+    output = []
+    pos = 0
+    while match := token.search(sql, pos):
+        output.append(sql[pos:match.start()])
+        opening = match.end() - 1
+        closing = matching_paren(sql, opening)
+        args = split_top_level(sql[opening + 1:closing])
+        if not args:
+            raise ValueError("empty MySQL CONCAT call in source view")
+        output.append("(" + " || ".join(rewrite_concat(arg) for arg in args) + ")")
+        pos = closing + 1
+    output.append(sql[pos:])
+    return "".join(output)
 
 
 def build_database(output: Path) -> None:
@@ -292,8 +315,6 @@ def build_database(output: Path) -> None:
     schema = SCHEMA.read_text(encoding="utf-8")
     data = DATA.read_text(encoding="utf-8")
     db = sqlite3.connect(output)
-    db.create_function("concat", -1, lambda *items: "".join("" if item is None else str(item) for item in items))
-    db.create_function("if", 3, lambda test, yes, no: yes if test else no)
     db.execute("PRAGMA foreign_keys=OFF")
     tables, indexes = create_tables(db, schema)
     insert_count = 0
@@ -362,8 +383,6 @@ def build_database(output: Path) -> None:
 def sqlite_snapshot(path: Path) -> dict[str, object]:
     """Capture logical schema and all values independent of SQLite file headers."""
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
-    db.create_function("concat", -1, lambda *items: "".join("" if item is None else str(item) for item in items))
-    db.create_function("if", 3, lambda test, yes, no: yes if test else no)
     try:
         objects = db.execute(
             "SELECT type, name, tbl_name, sql FROM sqlite_master "

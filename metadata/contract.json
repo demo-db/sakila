@@ -29,7 +29,7 @@
         }
       ],
       "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, seven views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; actor_info is represented with ordered subqueries because SQLite lacks MySQL's ordered GROUP_CONCAT syntax. Procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
-      "databaseSha256": "6bdb4eed96edcc540c729eb7f84a0d8a0dbe967ffbe8b286f014629bd133d177"
+      "databaseSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
     },
     "dataFile": "data-source/source.sqlite",
     "semantics": {
@@ -298,7 +298,7 @@
         }
       ],
       "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, seven views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; actor_info is represented with ordered subqueries because SQLite lacks MySQL's ordered GROUP_CONCAT syntax. Procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
-      "databaseSha256": "6bdb4eed96edcc540c729eb7f84a0d8a0dbe967ffbe8b286f014629bd133d177"
+      "databaseSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
     },
     "blobEncoding": "base64",
     "modelingLimitations": [],
@@ -3152,7 +3152,7 @@
         "primaryKey": [],
         "foreignKeys": [],
         "rowCount": 599,
-        "viewSql": "CREATE VIEW \"customer_list\" AS SELECT cu.customer_id AS ID, concat(cu.first_name, ' ', cu.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, if(cu.active, 'active','') AS notes, cu.store_id AS SID FROM customer AS cu JOIN address AS a ON cu.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
+        "viewSql": "CREATE VIEW \"customer_list\" AS SELECT cu.customer_id AS ID, (cu.first_name || ' ' || cu.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, CASE WHEN cu.active THEN 'active' ELSE '' END AS notes, cu.store_id AS SID FROM customer AS cu JOIN address AS a ON cu.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
         "tableSql": null,
         "rows": [
           {
@@ -3372,7 +3372,7 @@
         "primaryKey": [],
         "foreignKeys": [],
         "rowCount": 1000,
-        "viewSql": "CREATE VIEW \"film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(concat(actor.first_name, ' ', actor.last_name), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
+        "viewSql": "CREATE VIEW \"film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat((actor.first_name || ' ' || actor.last_name), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
         "tableSql": null,
         "rows": [
           {
@@ -3580,7 +3580,7 @@
         "primaryKey": [],
         "foreignKeys": [],
         "rowCount": 1000,
-        "viewSql": "CREATE VIEW \"nicer_but_slower_film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(concat(concat(upper(SUBSTR(actor.first_name,1,1)), lower(SUBSTR(actor.first_name,2,LENGTH(actor.first_name))),' ',concat(upper(SUBSTR(actor.last_name,1,1)), lower(SUBSTR(actor.last_name,2,LENGTH(actor.last_name)))))), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
+        "viewSql": "CREATE VIEW \"nicer_but_slower_film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(((upper(SUBSTR(actor.first_name,1,1)) || lower(SUBSTR(actor.first_name,2,LENGTH(actor.first_name))) || ' ' || (upper(SUBSTR(actor.last_name,1,1)) || lower(SUBSTR(actor.last_name,2,LENGTH(actor.last_name)))))), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
         "tableSql": null,
         "rows": [
           {
@@ -3825,7 +3825,7 @@
         "primaryKey": [],
         "foreignKeys": [],
         "rowCount": 2,
-        "viewSql": "CREATE VIEW \"sales_by_store\" AS SELECT concat(c.city, ',', cy.country) AS store , concat(m.first_name, ' ', m.last_name) AS manager , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN store AS s ON i.store_id = s.store_id INNER JOIN address AS a ON s.address_id = a.address_id INNER JOIN city AS c ON a.city_id = c.city_id INNER JOIN country AS cy ON c.country_id = cy.country_id INNER JOIN staff AS m ON s.manager_staff_id = m.staff_id GROUP BY s.store_id ORDER BY cy.country, c.city",
+        "viewSql": "CREATE VIEW \"sales_by_store\" AS SELECT (c.city || ',' || cy.country) AS store , (m.first_name || ' ' || m.last_name) AS manager , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN store AS s ON i.store_id = s.store_id INNER JOIN address AS a ON s.address_id = a.address_id INNER JOIN city AS c ON a.city_id = c.city_id INNER JOIN country AS cy ON c.country_id = cy.country_id INNER JOIN staff AS m ON s.manager_staff_id = m.staff_id GROUP BY s.store_id ORDER BY cy.country, c.city",
         "tableSql": null,
         "rows": [
           {
@@ -3923,7 +3923,7 @@
         "primaryKey": [],
         "foreignKeys": [],
         "rowCount": 2,
-        "viewSql": "CREATE VIEW \"staff_list\" AS SELECT s.staff_id AS ID, concat(s.first_name, ' ', s.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, s.store_id AS SID FROM staff AS s JOIN address AS a ON s.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
+        "viewSql": "CREATE VIEW \"staff_list\" AS SELECT s.staff_id AS ID, (s.first_name || ' ' || s.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, s.store_id AS SID FROM staff AS s JOIN address AS a ON s.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
         "tableSql": null,
         "rows": [
           {
@@ -3961,7 +3961,7 @@
       "table": null,
       "format": "sql",
       "path": "artifacts/sakila.sql",
-      "bytes": 4776796
+      "bytes": 4776797
     },
     {
       "table": "actor",

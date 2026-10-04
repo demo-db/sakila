@@ -130,24 +130,24 @@
       "bytes": 191
     },
     "artifacts/sakila.sql": {
-      "sha256": "62d0b172ffa184f7b4bed693851c52cb618e03e2b5a3ad94577c29932a6887b5",
-      "bytes": 4776796
+      "sha256": "7331f19f434e40ca368d7bc5f98183c20502280b88ab439166d30d0ff4e0e4f4",
+      "bytes": 4776797
     },
     "artifacts/sakila.sqlite": {
-      "sha256": "6bdb4eed96edcc540c729eb7f84a0d8a0dbe967ffbe8b286f014629bd133d177",
+      "sha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454",
       "bytes": 4915200
     },
     "manifest.json": {
-      "sha256": "b57c2d3a2ed771aa39012ef88a477402bb675525383ce2c7f95d5b4a7e3492bc",
+      "sha256": "b408335abaaaaa34f87b27172223bf1a27af985659663a32587f1e211dec5590",
       "bytes": 10640
     },
     "metadata/contract.json": {
-      "sha256": "039468015cb91fe69bb01f03d3537779108c9dae52e6196c3dc409f7d00095a1",
-      "bytes": 191959
+      "sha256": "89c9c181ed41746c5a26ec14b489f9b295040a450c13667c134db483bc65cbce",
+      "bytes": 191960
     },
     "metadata/schema.json": {
-      "sha256": "7aa2a0e5a1cb838de56b2bb1f4f5fc838a32106d806ac117c3f903c2d5eafc90",
-      "bytes": 168996
+      "sha256": "5aa51eec34cbb5a4314be97b2477c9821189c89d4159f98de22bf641b170ea91",
+      "bytes": 168997
     },
     "model/sakila.meaning.yaml": {
       "sha256": "8d005600fef94f41ea007fb58cf259e3f30060b4cc88b4df614dc74a3e896499",
@@ -162,7 +162,7 @@
       "bytes": 8961
     },
     "ovdb-database.json": {
-      "sha256": "16512c3a265f7793a3254313437fa62f687ab3db68683c06440ffbe7fdc75894",
+      "sha256": "d19c4c448e7a7a61a9a9bdaf051b69da44bcc619707b7491304a6c8fce8b9b6b",
       "bytes": 32109
     },
     "ovdb.yaml": {

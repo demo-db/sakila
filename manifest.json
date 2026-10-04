@@ -27,7 +27,7 @@
       }
     ],
     "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, seven views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; actor_info is represented with ordered subqueries because SQLite lacks MySQL's ordered GROUP_CONCAT syntax. Procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
-    "databaseSha256": "6bdb4eed96edcc540c729eb7f84a0d8a0dbe967ffbe8b286f014629bd133d177"
+    "databaseSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
   },
   "dataFile": "data-source/source.sqlite",
   "semantics": {
