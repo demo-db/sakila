@@ -1,0 +1,177 @@
+{
+  "contractVersion": 1,
+  "files": {
+    "artifacts/data/actor.csv": {
+      "sha256": "e73792d4d92dbec1b0ee9a9e0961b75590b01297c44cbef05232c15d13cbdb06",
+      "bytes": 7441
+    },
+    "artifacts/data/actor.json": {
+      "sha256": "50f68fa3b80570283c2ad271bb22ad0a82fd54c79f5afe08bdafa9fbb608c588",
+      "bytes": 20402
+    },
+    "artifacts/data/address.csv": {
+      "sha256": "737250cfd18cfa14305d4e92626c03aec6d1ccc8e29afd8ad5a208f32217f715",
+      "bytes": 69377
+    },
+    "artifacts/data/address.json": {
+      "sha256": "693df83f69feff3d735d1b20d674ec6fa7b73fdf7d0d806ad357b494d35d3340",
+      "bytes": 147694
+    },
+    "artifacts/data/category.csv": {
+      "sha256": "ff7134bdbc737723e4f7b4ccc6d21aab10006cbd808f191de611bfcd59715b1a",
+      "bytes": 507
+    },
+    "artifacts/data/category.json": {
+      "sha256": "7c71598337e7709288e55dee985ba97192711df6e1dcd8b373bd228ae5bd08d9",
+      "bytes": 1233
+    },
+    "artifacts/data/city.csv": {
+      "sha256": "e8e60d976649caad7db509518294550bcda81412080bf38f79277747f00fb9fd",
+      "bytes": 21937
+    },
+    "artifacts/data/city.json": {
+      "sha256": "320f0309adb67d8c80fcf6f7b42a51c74e54f9354d831cab9f2dae82349be2e5",
+      "bytes": 56104
+    },
+    "artifacts/data/country.csv": {
+      "sha256": "93be230e326ae364ff3a3b1a22dd4ca229cd4e4a232506ac145022803dbb8dce",
+      "bytes": 3628
+    },
+    "artifacts/data/country.json": {
+      "sha256": "d38b5c6686bab9cddff2524b9435770f444c610213f92b3cd2a97f96c18d1c69",
+      "bytes": 8937
+    },
+    "artifacts/data/customer.csv": {
+      "sha256": "ddb2f2b089f6c3a81fd4bef3bed5f8c468a4985cbbf01308e20f7983ec8b5131",
+      "bytes": 59029
+    },
+    "artifacts/data/customer.json": {
+      "sha256": "07a8abcc7d3674c3f62e47f1f0eee27b11f8a53f5f741ffad2f99335879274f1",
+      "bytes": 138010
+    },
+    "artifacts/data/film.csv": {
+      "sha256": "e21082583946c64f87093e197e2f493928f98a6a62714c045b9052e70a9f98fe",
+      "bytes": 193158
+    },
+    "artifacts/data/film.json": {
+      "sha256": "50826c818619c24d3097bdbc59f9aed8a6eccbb1e55e3e1745b39c174b894a65",
+      "bytes": 411531
+    },
+    "artifacts/data/film_actor.csv": {
+      "sha256": "4805237c7c45a2ed5d477a5b795a338d40a98921319f0528b8ee5e25650b85bf",
+      "bytes": 149493
+    },
+    "artifacts/data/film_actor.json": {
+      "sha256": "1af532cc6854059a675be69c1033d7678097407f2ddb99eae49e2a5f8041a61d",
+      "bytes": 395257
+    },
+    "artifacts/data/film_category.csv": {
+      "sha256": "65cfd1b9f0bc90d66da85828107283621259a4d014f41f9d5376d50c37b4623a",
+      "bytes": 26348
+    },
+    "artifacts/data/film_category.json": {
+      "sha256": "66f7e7b05ae5581fa87984d35acc261de781f1906716c8103f7b1ecb209708f8",
+      "bytes": 74319
+    },
+    "artifacts/data/film_text.csv": {
+      "sha256": "cfeb1103c07e4a758629066f28e68f1014a31f943350a60f8465da204ebbaf67",
+      "bytes": 113996
+    },
+    "artifacts/data/film_text.json": {
+      "sha256": "fc020e2be85818633f3d4989dccdcb4197ef95be450af5555381fd41b26ab831",
+      "bytes": 157973
+    },
+    "artifacts/data/inventory.csv": {
+      "sha256": "69b4388b27fae57d047237326bfff353f5b3fbaedafef02292dd7ee79861dbb6",
+      "bytes": 140459
+    },
+    "artifacts/data/inventory.json": {
+      "sha256": "7400455fab33e61588413775798414db01745af163ad0fe66f7cfcb22ff5fd3c",
+      "bytes": 419861
+    },
+    "artifacts/data/language.csv": {
+      "sha256": "894e4663d50d850f7aaeadbad3c3ecb4cf5b0329f20c5b8730403fa7c371c027",
+      "bytes": 209
+    },
+    "artifacts/data/language.json": {
+      "sha256": "406c2bc3771dcf362e7b14fc408a6b48b6c8b3a9e246b6e0cede76bcba5d5a33",
+      "bytes": 465
+    },
+    "artifacts/data/payment.csv": {
+      "sha256": "a8746719c84ce354cff526200fc158b3261cfb7c56f523b288fc49aeb0deadb5",
+      "bytes": 985745
+    },
+    "artifacts/data/payment.json": {
+      "sha256": "a889a9bab095ff34868fc1146a4d4449a9bc4fd771ed6b53750f261088ba60d8",
+      "bytes": 2654250
+    },
+    "artifacts/data/rental.csv": {
+      "sha256": "0c0cddf38170fe30378fa2c21a646aa7d1b4e35c72a5e7572086285b8c215bce",
+      "bytes": 1214129
+    },
+    "artifacts/data/rental.json": {
+      "sha256": "cb67d40adedf6b7c9402f4c752ffe9040c20ad8c47d2a96367136bca63da455c",
+      "bytes": 3011346
+    },
+    "artifacts/data/staff.csv": {
+      "sha256": "037f91a1845b9c801db1a925b1cea56c19dd726affd5ead5c1abff04fc87f9c0",
+      "bytes": 48782
+    },
+    "artifacts/data/staff.json": {
+      "sha256": "e1129dfd5b548b378878b98690d6e0fc6d404929c446ca00fb713f9f01b4f4bd",
+      "bytes": 48994
+    },
+    "artifacts/data/store.csv": {
+      "sha256": "9415fd3f0a1ca67c9ffb995789dbd78b4dd8944d08c93b9cc6c29d5b9f5c9f7f",
+      "bytes": 101
+    },
+    "artifacts/data/store.json": {
+      "sha256": "07efa69007e6718e448b96a512cec74f2a6c96af28aa2497863d84b12b194893",
+      "bytes": 191
+    },
+    "artifacts/sakila.sql": {
+      "sha256": "7331f19f434e40ca368d7bc5f98183c20502280b88ab439166d30d0ff4e0e4f4",
+      "bytes": 4776797
+    },
+    "artifacts/sakila.sqlite": {
+      "sha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454",
+      "bytes": 4915200
+    },
+    "manifest.json": {
+      "sha256": "b408335abaaaaa34f87b27172223bf1a27af985659663a32587f1e211dec5590",
+      "bytes": 10640
+    },
+    "metadata/contract.json": {
+      "sha256": "89c9c181ed41746c5a26ec14b489f9b295040a450c13667c134db483bc65cbce",
+      "bytes": 191960
+    },
+    "metadata/schema.json": {
+      "sha256": "5aa51eec34cbb5a4314be97b2477c9821189c89d4159f98de22bf641b170ea91",
+      "bytes": 168997
+    },
+    "model/sakila.meaning.yaml": {
+      "sha256": "8d005600fef94f41ea007fb58cf259e3f30060b4cc88b4df614dc74a3e896499",
+      "bytes": 2755
+    },
+    "model/sakila.modelspec.hcl": {
+      "sha256": "b9172e238ad911fb27004d5143dc2ccce82fc16bcb4c59bc40df475c6bdc36b7",
+      "bytes": 6603
+    },
+    "model/sakila.modelspec.json": {
+      "sha256": "e60c2b1f4cfd490ce97939b1703b741d48758472170f3b54aedf6d7f4865b336",
+      "bytes": 8961
+    },
+    "ovdb-database.json": {
+      "sha256": "d19c4c448e7a7a61a9a9bdaf051b69da44bcc619707b7491304a6c8fce8b9b6b",
+      "bytes": 32109
+    },
+    "ovdb.yaml": {
+      "sha256": "c9c7883590484c65f8514bb1045e977a3eb531dcb4735bdeb37c3183d72a8417",
+      "bytes": 1314
+    },
+    "schemas/ovdb-database-draft-1.schema.json": {
+      "sha256": "2424ef00acd462ab5a8abc546fe2d1fffbbb5397e312332aedc77b3e73109488",
+      "bytes": 5371
+    }
+  }
+}

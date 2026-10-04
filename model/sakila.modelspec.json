@@ -1,0 +1,454 @@
+{
+  "modelspec": "1.0-draft",
+  "module": {
+    "id": "github.com/demo-db/sakila/sakila",
+    "name": "sakila",
+    "version": "0.1.0"
+  },
+  "entities": {
+    "actor": {
+      "key": [
+        "actor_id"
+      ],
+      "properties": {
+        "actor_id": {
+          "type": "int"
+        },
+        "first_name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "address": {
+      "key": [
+        "address_id"
+      ],
+      "properties": {
+        "address_id": {
+          "type": "int"
+        },
+        "address": {
+          "required": true,
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "district": {
+          "required": true,
+          "type": "string"
+        },
+        "city_id": {
+          "required": true,
+          "entity": "city"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "phone": {
+          "required": true,
+          "type": "string"
+        },
+        "location": {
+          "required": true,
+          "type": "document"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "category": {
+      "key": [
+        "category_id"
+      ],
+      "properties": {
+        "category_id": {
+          "type": "int"
+        },
+        "name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "city": {
+      "key": [
+        "city_id"
+      ],
+      "properties": {
+        "city_id": {
+          "type": "int"
+        },
+        "city": {
+          "required": true,
+          "type": "string"
+        },
+        "country_id": {
+          "required": true,
+          "entity": "country"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "country": {
+      "key": [
+        "country_id"
+      ],
+      "properties": {
+        "country_id": {
+          "type": "int"
+        },
+        "country": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "customer": {
+      "key": [
+        "customer_id"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "int"
+        },
+        "store_id": {
+          "required": true,
+          "entity": "store"
+        },
+        "first_name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_name": {
+          "required": true,
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "address_id": {
+          "required": true,
+          "entity": "address"
+        },
+        "active": {
+          "required": true,
+          "type": "int"
+        },
+        "create_date": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "type": "string"
+        }
+      }
+    },
+    "film": {
+      "key": [
+        "film_id"
+      ],
+      "properties": {
+        "film_id": {
+          "type": "int"
+        },
+        "title": {
+          "required": true,
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "release_year": {
+          "type": "string"
+        },
+        "language_id": {
+          "required": true,
+          "entity": "language"
+        },
+        "original_language_id": {
+          "entity": "language"
+        },
+        "rental_duration": {
+          "required": true,
+          "type": "int"
+        },
+        "rental_rate": {
+          "required": true,
+          "type": "decimal"
+        },
+        "length": {
+          "type": "int"
+        },
+        "replacement_cost": {
+          "required": true,
+          "type": "decimal"
+        },
+        "rating": {
+          "type": "string"
+        },
+        "special_features": {
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "film_actor": {
+      "key": [
+        "actor_id",
+        "film_id"
+      ],
+      "properties": {
+        "actor_id": {
+          "required": true,
+          "entity": "actor"
+        },
+        "film_id": {
+          "required": true,
+          "entity": "film"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "film_category": {
+      "key": [
+        "film_id",
+        "category_id"
+      ],
+      "properties": {
+        "film_id": {
+          "required": true,
+          "entity": "film"
+        },
+        "category_id": {
+          "required": true,
+          "entity": "category"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "film_text": {
+      "key": [
+        "film_id"
+      ],
+      "properties": {
+        "film_id": {
+          "required": true,
+          "type": "int"
+        },
+        "title": {
+          "required": true,
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "inventory": {
+      "key": [
+        "inventory_id"
+      ],
+      "properties": {
+        "inventory_id": {
+          "type": "int"
+        },
+        "film_id": {
+          "required": true,
+          "entity": "film"
+        },
+        "store_id": {
+          "required": true,
+          "entity": "store"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "language": {
+      "key": [
+        "language_id"
+      ],
+      "properties": {
+        "language_id": {
+          "type": "int"
+        },
+        "name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "payment": {
+      "key": [
+        "payment_id"
+      ],
+      "properties": {
+        "payment_id": {
+          "type": "int"
+        },
+        "customer_id": {
+          "required": true,
+          "entity": "customer"
+        },
+        "staff_id": {
+          "required": true,
+          "entity": "staff"
+        },
+        "rental_id": {
+          "entity": "rental"
+        },
+        "amount": {
+          "required": true,
+          "type": "decimal"
+        },
+        "payment_date": {
+          "required": true,
+          "type": "string"
+        },
+        "last_update": {
+          "type": "string"
+        }
+      }
+    },
+    "rental": {
+      "key": [
+        "rental_id"
+      ],
+      "properties": {
+        "rental_id": {
+          "type": "int"
+        },
+        "rental_date": {
+          "required": true,
+          "type": "string"
+        },
+        "inventory_id": {
+          "required": true,
+          "entity": "inventory"
+        },
+        "customer_id": {
+          "required": true,
+          "entity": "customer"
+        },
+        "return_date": {
+          "type": "string"
+        },
+        "staff_id": {
+          "required": true,
+          "entity": "staff"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "staff": {
+      "key": [
+        "staff_id"
+      ],
+      "properties": {
+        "staff_id": {
+          "type": "int"
+        },
+        "first_name": {
+          "required": true,
+          "type": "string"
+        },
+        "last_name": {
+          "required": true,
+          "type": "string"
+        },
+        "address_id": {
+          "required": true,
+          "entity": "address"
+        },
+        "picture": {
+          "type": "document"
+        },
+        "email": {
+          "type": "string"
+        },
+        "store_id": {
+          "required": true,
+          "entity": "store"
+        },
+        "active": {
+          "required": true,
+          "type": "int"
+        },
+        "username": {
+          "required": true,
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "store": {
+      "key": [
+        "store_id"
+      ],
+      "properties": {
+        "store_id": {
+          "type": "int"
+        },
+        "manager_staff_id": {
+          "required": true,
+          "entity": "staff"
+        },
+        "address_id": {
+          "required": true,
+          "entity": "address"
+        },
+        "last_update": {
+          "required": true,
+          "type": "string"
+        }
+      }
+    }
+  }
+}
