@@ -1,0 +1,270 @@
+{
+  "contractVersion": 1,
+  "id": "sakila",
+  "name": "Sakila",
+  "description": "MySQL's sample video rental database, with films, actors, customers, rentals, payments, and stores.",
+  "domain": "Video rental",
+  "siteHost": "sakila.demodb.dev",
+  "aliases": [],
+  "source": {
+    "repository": "https://downloads.mysql.com/docs/sakila-db.zip",
+    "version": "Sakila 1.5",
+    "revision": "sha256:ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+    "path": "sakila-db/sakila-schema.sql and sakila-db/sakila-data.sql",
+    "archiveSha256": "ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+    "license": "BSD-3-Clause",
+    "licenseFile": "data-source/sakila-schema.sql",
+    "recipe": [
+      {
+        "path": "data-source/sakila-schema.sql",
+        "sha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915",
+        "sourceSha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915"
+      },
+      {
+        "path": "data-source/sakila-data.sql",
+        "sha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174",
+        "sourceSha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174"
+      }
+    ],
+    "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, six views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
+    "databaseSha256": "7a7889aca95e69b1be9e78fb05f5da7200d14aea94738ec34714a43e77860ef1"
+  },
+  "dataFile": "data-source/source.sqlite",
+  "semantics": {
+    "tableConcepts": {
+      "actor": [
+        "actor"
+      ],
+      "customer": [
+        "customer"
+      ],
+      "staff": [
+        "employee"
+      ],
+      "film": [
+        "film"
+      ],
+      "store": [
+        "store"
+      ],
+      "rental": [
+        "rental"
+      ],
+      "payment": [
+        "payment"
+      ]
+    }
+  },
+  "tableDescriptions": {
+    "actor": "Performers available to be associated with films.",
+    "address": "Customer, staff, and store addresses, including the source's location geometry as a binary value.",
+    "category": "Film categories used to classify the catalogue.",
+    "city": "Cities associated with addresses and countries.",
+    "country": "Countries associated with cities.",
+    "customer": "People registered to rent films from a store.",
+    "film": "The film catalogue, including language, rating, rental terms, and special features.",
+    "film_actor": "The many-to-many association between films and actors.",
+    "film_category": "The many-to-many association between films and categories.",
+    "film_text": "Search-oriented title and description copy maintained from the film catalogue by the source trigger.",
+    "inventory": "Film copies held by stores and available for rental.",
+    "language": "Languages used for original and dubbed films.",
+    "payment": "Customer payments recorded for rentals and staff transactions.",
+    "rental": "Film inventory rentals by customers and staff.",
+    "staff": "Store staff, including source PNG profile pictures stored as BLOBs.",
+    "store": "Rental locations and their managers."
+  },
+  "columnDescriptions": {
+    "address": {
+      "location": "Original MySQL geometry payload retained byte-for-byte as raw WKB in a SQLite BLOB; no spatial extension or coordinate decoder is implied."
+    },
+    "film": {
+      "rating": "Source ENUM values stored as text; SQLite does not enforce the original allowed-value set.",
+      "special_features": "Source SET values stored as text; SQLite does not enforce the original allowed-value set."
+    },
+    "staff": {
+      "picture": "Original PNG bytes stored as a BLOB; JSON and CSV exports encode this value as base64."
+    }
+  },
+  "capabilities": {
+    "exports": [
+      "sqlite",
+      "csv",
+      "json",
+      "sql"
+    ],
+    "ovdb": {
+      "available": false,
+      "canonicalUrl": "https://demodb.dev/sakila/",
+      "serverId": "https://demodb.dev/ovdb",
+      "serverDbBaseUrl": "https://demodb.dev/ovdb/db/sakila/",
+      "connection": "https://demodb.dev/ovdb/v1/databases/sakila",
+      "query": false,
+      "readOnly": true,
+      "deploymentVerified": false
+    },
+    "datatug": {
+      "available": true,
+      "mode": "static-json"
+    }
+  },
+  "queries": [
+    {
+      "title": "Films by category",
+      "description": "List the catalogue's films and their categories.",
+      "sql": "SELECT film_list.title, film_list.category, film_list.price FROM film_list ORDER BY film_list.category, film_list.title;"
+    },
+    {
+      "title": "Customer rentals",
+      "description": "Show the latest rentals with customer and staff names.",
+      "sql": "SELECT customer_list.name AS customer, rental.rental_date, film.title, staff_list.name AS staff FROM rental JOIN inventory USING (inventory_id) JOIN film USING (film_id) JOIN customer_list ON customer_list.ID = rental.customer_id JOIN staff_list ON staff_list.ID = rental.staff_id ORDER BY rental.rental_date DESC LIMIT 20;"
+    },
+    {
+      "title": "Sales by store",
+      "description": "Aggregate recorded rental payments by store.",
+      "sql": "SELECT store, manager, total_sales FROM sales_by_store ORDER BY total_sales DESC;"
+    }
+  ],
+  "generator": {
+    "publisher": {
+      "name": "DemoDB",
+      "url": "https://github.com/demo-db",
+      "repository": "https://github.com/demo-db/sakila"
+    },
+    "licences": {
+      "model": "BSD-3-Clause",
+      "meaning": "CC0-1.0"
+    },
+    "model": {
+      "address": "modelspec://github.com/demo-db/sakila/sakila",
+      "moduleId": "github.com/demo-db/sakila/sakila",
+      "name": "sakila",
+      "version": "0.1.0"
+    },
+    "ovdb": {
+      "query": false,
+      "deployment": {
+        "engine": "sqlite",
+        "url": "https://cloud.openvaultdb.com/ovdb/dbs/sakila",
+        "discovery": "https://demodb.dev/.well-known/openvaultdb"
+      },
+      "recordsets": [
+        "actor",
+        "address",
+        "category",
+        "city",
+        "country",
+        "customer",
+        "film",
+        "film_actor",
+        "film_category",
+        "film_text",
+        "inventory",
+        "language",
+        "payment",
+        "rental",
+        "staff",
+        "store"
+      ]
+    },
+    "meaning": {
+      "id": "sakila",
+      "address": "meaning://github.com/demo-db/sakila",
+      "name": "Sakila",
+      "description": "Film, customer, inventory, rental, payment, and store concepts in the MySQL Sakila sample.",
+      "license": "CC0-1.0",
+      "core": {
+        "address": "meaning://github.com/meaninggraph/core",
+        "revision": "982916d73f0a35ff2558b0062f58aa3ac4f24d97"
+      },
+      "concepts": [
+        {
+          "id": "actor",
+          "kind": "entity",
+          "label": "Actor",
+          "description": "A performer associated with one or more films.",
+          "extends": "meaning://github.com/meaninggraph/core/person?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+          "bindings": [
+            {
+              "recordset": "actor",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "customer",
+          "kind": "entity",
+          "label": "Customer",
+          "description": "A person registered to rent from a store.",
+          "extends": "meaning://github.com/meaninggraph/core/customer?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+          "bindings": [
+            {
+              "recordset": "customer",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "employee",
+          "kind": "entity",
+          "label": "Staff member",
+          "description": "An employee who manages stores or processes rentals and payments.",
+          "extends": "meaning://github.com/meaninggraph/core/employee?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+          "bindings": [
+            {
+              "recordset": "staff",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "film",
+          "kind": "entity",
+          "label": "Film",
+          "description": "A title in the rental catalogue.",
+          "bindings": [
+            {
+              "recordset": "film",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "store",
+          "kind": "entity",
+          "label": "Store",
+          "description": "A location that holds and rents film inventory.",
+          "bindings": [
+            {
+              "recordset": "store",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "rental",
+          "kind": "entity",
+          "label": "Rental",
+          "description": "A customer's rental of one item of film inventory.",
+          "bindings": [
+            {
+              "recordset": "rental",
+              "role": "entity"
+            }
+          ]
+        },
+        {
+          "id": "payment",
+          "kind": "entity",
+          "label": "Payment",
+          "description": "A payment recorded for a rental transaction.",
+          "bindings": [
+            {
+              "recordset": "payment",
+              "role": "entity"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

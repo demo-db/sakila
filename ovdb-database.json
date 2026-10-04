@@ -1,0 +1,1199 @@
+{
+  "format": "ovdb-database/draft-1",
+  "id": "https://demodb.dev/sakila/",
+  "localId": "sakila",
+  "serverId": "https://demodb.dev/ovdb",
+  "serverDbBaseUrl": "https://demodb.dev/ovdb/db/sakila/",
+  "title": "Sakila",
+  "description": "MySQL's sample video rental database, with films, actors, customers, rentals, payments, and stores.",
+  "homepage": "https://sakila.demodb.dev/",
+  "apiUrl": "https://demodb.dev/ovdb/v1/databases/sakila",
+  "capabilities": {
+    "read": true,
+    "query": false,
+    "write": false
+  },
+  "deployment": {
+    "engine": "sqlite",
+    "url": "https://cloud.openvaultdb.com/ovdb/dbs/sakila",
+    "discovery": "https://demodb.dev/.well-known/openvaultdb"
+  },
+  "model": {
+    "id": "modelspec://github.com/demo-db/sakila/sakila",
+    "url": "https://sakila.demodb.dev/model/sakila.modelspec.json",
+    "hclUrl": "https://sakila.demodb.dev/model/sakila.modelspec.hcl"
+  },
+  "meaning": {
+    "id": "meaning://github.com/demo-db/sakila",
+    "url": "https://sakila.demodb.dev/model/sakila.meaning.yaml"
+  },
+  "publisher": {
+    "name": "DemoDB",
+    "url": "https://github.com/demo-db",
+    "repository": "https://github.com/demo-db/sakila"
+  },
+  "provenance": {
+    "repository": "https://downloads.mysql.com/docs/sakila-db.zip",
+    "revision": "sha256:ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+    "path": "sakila-db/sakila-schema.sql and sakila-db/sakila-data.sql",
+    "sha256": "7a7889aca95e69b1be9e78fb05f5da7200d14aea94738ec34714a43e77860ef1",
+    "license": "BSD-3-Clause",
+    "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, six views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax. The sha256 identifies the generated SQLite fixture at data-source/source.sqlite; recipe inputs are identified separately by the provider manifest."
+  },
+  "licences": {
+    "data": "BSD-3-Clause",
+    "model": "BSD-3-Clause",
+    "meaning": "CC0-1.0"
+  },
+  "recordsets": [
+    {
+      "name": "actor",
+      "kind": "table",
+      "description": "Performers available to be associated with films.",
+      "rowCount": 200,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "first_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "actor_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [],
+      "modelEntity": "actor"
+    },
+    {
+      "name": "address",
+      "kind": "table",
+      "description": "Customer, staff, and store addresses, including the source's location geometry as a binary value.",
+      "rowCount": 603,
+      "columns": [
+        {
+          "name": "address_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "address",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "address2",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "district",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "city_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "postal_code",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "phone",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "location",
+          "type": "BLOB",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "address_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "city_id",
+          "table": "city",
+          "referencedColumn": "city_id",
+          "constraint": 0,
+          "position": 0
+        }
+      ],
+      "modelEntity": "address"
+    },
+    {
+      "name": "category",
+      "kind": "table",
+      "description": "Film categories used to classify the catalogue.",
+      "rowCount": 16,
+      "columns": [
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "category_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [],
+      "modelEntity": "category"
+    },
+    {
+      "name": "city",
+      "kind": "table",
+      "description": "Cities associated with addresses and countries.",
+      "rowCount": 600,
+      "columns": [
+        {
+          "name": "city_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "city",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "country_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "city_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "country_id",
+          "table": "country",
+          "referencedColumn": "country_id",
+          "constraint": 0,
+          "position": 0
+        }
+      ],
+      "modelEntity": "city"
+    },
+    {
+      "name": "country",
+      "kind": "table",
+      "description": "Countries associated with cities.",
+      "rowCount": 109,
+      "columns": [
+        {
+          "name": "country_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "country",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "country_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [],
+      "modelEntity": "country"
+    },
+    {
+      "name": "customer",
+      "kind": "table",
+      "description": "People registered to rent films from a store.",
+      "rowCount": 599,
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "store_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "first_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "email",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "address_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "active",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "1"
+        },
+        {
+          "name": "create_date",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "customer_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "store_id",
+          "table": "store",
+          "referencedColumn": "store_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "address_id",
+          "table": "address",
+          "referencedColumn": "address_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "customer"
+    },
+    {
+      "name": "film",
+      "kind": "table",
+      "description": "The film catalogue, including language, rating, rental terms, and special features.",
+      "rowCount": 1000,
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "release_year",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "original_language_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "rental_duration",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "3"
+        },
+        {
+          "name": "rental_rate",
+          "type": "NUMERIC",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "4.99"
+        },
+        {
+          "name": "length",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "replacement_cost",
+          "type": "NUMERIC",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "19.99"
+        },
+        {
+          "name": "rating",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "'G'"
+        },
+        {
+          "name": "special_features",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "film_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "original_language_id",
+          "table": "language",
+          "referencedColumn": "language_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "language_id",
+          "table": "language",
+          "referencedColumn": "language_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "film"
+    },
+    {
+      "name": "film_actor",
+      "kind": "table",
+      "description": "The many-to-many association between films and actors.",
+      "rowCount": 5462,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "film_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "actor_id",
+          "position": 1
+        },
+        {
+          "column": "film_id",
+          "position": 2
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "film_id",
+          "table": "film",
+          "referencedColumn": "film_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "actor_id",
+          "table": "actor",
+          "referencedColumn": "actor_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "film_actor"
+    },
+    {
+      "name": "film_category",
+      "kind": "table",
+      "description": "The many-to-many association between films and categories.",
+      "rowCount": 1000,
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "primaryKeyPosition": 2,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "film_id",
+          "position": 1
+        },
+        {
+          "column": "category_id",
+          "position": 2
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "category_id",
+          "table": "category",
+          "referencedColumn": "category_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "film_id",
+          "table": "film",
+          "referencedColumn": "film_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "film_category"
+    },
+    {
+      "name": "film_text",
+      "kind": "table",
+      "description": "Search-oriented title and description copy maintained from the film catalogue by the source trigger.",
+      "rowCount": 1000,
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "film_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [],
+      "modelEntity": "film_text"
+    },
+    {
+      "name": "inventory",
+      "kind": "table",
+      "description": "Film copies held by stores and available for rental.",
+      "rowCount": 4581,
+      "columns": [
+        {
+          "name": "inventory_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "film_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "store_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "inventory_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "film_id",
+          "table": "film",
+          "referencedColumn": "film_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "store_id",
+          "table": "store",
+          "referencedColumn": "store_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "inventory"
+    },
+    {
+      "name": "language",
+      "kind": "table",
+      "description": "Languages used for original and dubbed films.",
+      "rowCount": 6,
+      "columns": [
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "language_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [],
+      "modelEntity": "language"
+    },
+    {
+      "name": "payment",
+      "kind": "table",
+      "description": "Customer payments recorded for rentals and staff transactions.",
+      "rowCount": 16044,
+      "columns": [
+        {
+          "name": "payment_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "staff_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "rental_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "amount",
+          "type": "NUMERIC",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "payment_date",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "payment_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "staff_id",
+          "table": "staff",
+          "referencedColumn": "staff_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "customer_id",
+          "table": "customer",
+          "referencedColumn": "customer_id",
+          "constraint": 1,
+          "position": 0
+        },
+        {
+          "column": "rental_id",
+          "table": "rental",
+          "referencedColumn": "rental_id",
+          "constraint": 2,
+          "position": 0
+        }
+      ],
+      "modelEntity": "payment"
+    },
+    {
+      "name": "rental",
+      "kind": "table",
+      "description": "Film inventory rentals by customers and staff.",
+      "rowCount": 16044,
+      "columns": [
+        {
+          "name": "rental_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "rental_date",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "inventory_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "return_date",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "staff_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "rental_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "customer_id",
+          "table": "customer",
+          "referencedColumn": "customer_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "inventory_id",
+          "table": "inventory",
+          "referencedColumn": "inventory_id",
+          "constraint": 1,
+          "position": 0
+        },
+        {
+          "column": "staff_id",
+          "table": "staff",
+          "referencedColumn": "staff_id",
+          "constraint": 2,
+          "position": 0
+        }
+      ],
+      "modelEntity": "rental"
+    },
+    {
+      "name": "staff",
+      "kind": "table",
+      "description": "Store staff, including source PNG profile pictures stored as BLOBs.",
+      "rowCount": 2,
+      "columns": [
+        {
+          "name": "staff_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "first_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_name",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "address_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "picture",
+          "type": "BLOB",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "email",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "store_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "active",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "1"
+        },
+        {
+          "name": "username",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "password",
+          "type": "TEXT",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "NULL"
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "staff_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "address_id",
+          "table": "address",
+          "referencedColumn": "address_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "store_id",
+          "table": "store",
+          "referencedColumn": "store_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "staff"
+    },
+    {
+      "name": "store",
+      "kind": "table",
+      "description": "Rental locations and their managers.",
+      "rowCount": 2,
+      "columns": [
+        {
+          "name": "store_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "primaryKey": true,
+          "primaryKeyPosition": 1,
+          "defaultValue": null
+        },
+        {
+          "name": "manager_staff_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "address_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_update",
+          "type": "TEXT",
+          "nullable": false,
+          "primaryKey": false,
+          "primaryKeyPosition": null,
+          "defaultValue": "CURRENT_TIMESTAMP"
+        }
+      ],
+      "primaryKey": [
+        {
+          "column": "store_id",
+          "position": 1
+        }
+      ],
+      "foreignKeys": [
+        {
+          "column": "address_id",
+          "table": "address",
+          "referencedColumn": "address_id",
+          "constraint": 0,
+          "position": 0
+        },
+        {
+          "column": "manager_staff_id",
+          "table": "staff",
+          "referencedColumn": "staff_id",
+          "constraint": 1,
+          "position": 0
+        }
+      ],
+      "modelEntity": "store"
+    }
+  ]
+}

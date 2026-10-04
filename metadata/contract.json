@@ -1,0 +1,4034 @@
+{
+  "contractVersion": 1,
+  "manifest": {
+    "contractVersion": 1,
+    "id": "sakila",
+    "name": "Sakila",
+    "description": "MySQL's sample video rental database, with films, actors, customers, rentals, payments, and stores.",
+    "domain": "Video rental",
+    "siteHost": "sakila.demodb.dev",
+    "aliases": [],
+    "source": {
+      "repository": "https://downloads.mysql.com/docs/sakila-db.zip",
+      "version": "Sakila 1.5",
+      "revision": "sha256:ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+      "path": "sakila-db/sakila-schema.sql and sakila-db/sakila-data.sql",
+      "archiveSha256": "ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+      "license": "BSD-3-Clause",
+      "licenseFile": "data-source/sakila-schema.sql",
+      "recipe": [
+        {
+          "path": "data-source/sakila-schema.sql",
+          "sha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915",
+          "sourceSha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915"
+        },
+        {
+          "path": "data-source/sakila-data.sql",
+          "sha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174",
+          "sourceSha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174"
+        }
+      ],
+      "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, six views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
+      "databaseSha256": "7a7889aca95e69b1be9e78fb05f5da7200d14aea94738ec34714a43e77860ef1"
+    },
+    "dataFile": "data-source/source.sqlite",
+    "semantics": {
+      "tableConcepts": {
+        "actor": [
+          "actor"
+        ],
+        "customer": [
+          "customer"
+        ],
+        "staff": [
+          "employee"
+        ],
+        "film": [
+          "film"
+        ],
+        "store": [
+          "store"
+        ],
+        "rental": [
+          "rental"
+        ],
+        "payment": [
+          "payment"
+        ]
+      }
+    },
+    "tableDescriptions": {
+      "actor": "Performers available to be associated with films.",
+      "address": "Customer, staff, and store addresses, including the source's location geometry as a binary value.",
+      "category": "Film categories used to classify the catalogue.",
+      "city": "Cities associated with addresses and countries.",
+      "country": "Countries associated with cities.",
+      "customer": "People registered to rent films from a store.",
+      "film": "The film catalogue, including language, rating, rental terms, and special features.",
+      "film_actor": "The many-to-many association between films and actors.",
+      "film_category": "The many-to-many association between films and categories.",
+      "film_text": "Search-oriented title and description copy maintained from the film catalogue by the source trigger.",
+      "inventory": "Film copies held by stores and available for rental.",
+      "language": "Languages used for original and dubbed films.",
+      "payment": "Customer payments recorded for rentals and staff transactions.",
+      "rental": "Film inventory rentals by customers and staff.",
+      "staff": "Store staff, including source PNG profile pictures stored as BLOBs.",
+      "store": "Rental locations and their managers."
+    },
+    "columnDescriptions": {
+      "address": {
+        "location": "Original MySQL geometry payload retained byte-for-byte as raw WKB in a SQLite BLOB; no spatial extension or coordinate decoder is implied."
+      },
+      "film": {
+        "rating": "Source ENUM values stored as text; SQLite does not enforce the original allowed-value set.",
+        "special_features": "Source SET values stored as text; SQLite does not enforce the original allowed-value set."
+      },
+      "staff": {
+        "picture": "Original PNG bytes stored as a BLOB; JSON and CSV exports encode this value as base64."
+      }
+    },
+    "capabilities": {
+      "exports": [
+        "sqlite",
+        "csv",
+        "json",
+        "sql"
+      ],
+      "ovdb": {
+        "available": false,
+        "canonicalUrl": "https://demodb.dev/sakila/",
+        "serverId": "https://demodb.dev/ovdb",
+        "serverDbBaseUrl": "https://demodb.dev/ovdb/db/sakila/",
+        "connection": "https://demodb.dev/ovdb/v1/databases/sakila",
+        "query": false,
+        "readOnly": true,
+        "deploymentVerified": false
+      },
+      "datatug": {
+        "available": true,
+        "mode": "static-json"
+      }
+    },
+    "queries": [
+      {
+        "title": "Films by category",
+        "description": "List the catalogue's films and their categories.",
+        "sql": "SELECT film_list.title, film_list.category, film_list.price FROM film_list ORDER BY film_list.category, film_list.title;"
+      },
+      {
+        "title": "Customer rentals",
+        "description": "Show the latest rentals with customer and staff names.",
+        "sql": "SELECT customer_list.name AS customer, rental.rental_date, film.title, staff_list.name AS staff FROM rental JOIN inventory USING (inventory_id) JOIN film USING (film_id) JOIN customer_list ON customer_list.ID = rental.customer_id JOIN staff_list ON staff_list.ID = rental.staff_id ORDER BY rental.rental_date DESC LIMIT 20;"
+      },
+      {
+        "title": "Sales by store",
+        "description": "Aggregate recorded rental payments by store.",
+        "sql": "SELECT store, manager, total_sales FROM sales_by_store ORDER BY total_sales DESC;"
+      }
+    ],
+    "generator": {
+      "publisher": {
+        "name": "DemoDB",
+        "url": "https://github.com/demo-db",
+        "repository": "https://github.com/demo-db/sakila"
+      },
+      "licences": {
+        "model": "BSD-3-Clause",
+        "meaning": "CC0-1.0"
+      },
+      "model": {
+        "address": "modelspec://github.com/demo-db/sakila/sakila",
+        "moduleId": "github.com/demo-db/sakila/sakila",
+        "name": "sakila",
+        "version": "0.1.0"
+      },
+      "ovdb": {
+        "query": false,
+        "deployment": {
+          "engine": "sqlite",
+          "url": "https://cloud.openvaultdb.com/ovdb/dbs/sakila",
+          "discovery": "https://demodb.dev/.well-known/openvaultdb"
+        },
+        "recordsets": [
+          "actor",
+          "address",
+          "category",
+          "city",
+          "country",
+          "customer",
+          "film",
+          "film_actor",
+          "film_category",
+          "film_text",
+          "inventory",
+          "language",
+          "payment",
+          "rental",
+          "staff",
+          "store"
+        ]
+      },
+      "meaning": {
+        "id": "sakila",
+        "address": "meaning://github.com/demo-db/sakila",
+        "name": "Sakila",
+        "description": "Film, customer, inventory, rental, payment, and store concepts in the MySQL Sakila sample.",
+        "license": "CC0-1.0",
+        "core": {
+          "address": "meaning://github.com/meaninggraph/core",
+          "revision": "982916d73f0a35ff2558b0062f58aa3ac4f24d97"
+        },
+        "concepts": [
+          {
+            "id": "actor",
+            "kind": "entity",
+            "label": "Actor",
+            "description": "A performer associated with one or more films.",
+            "extends": "meaning://github.com/meaninggraph/core/person?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+            "bindings": [
+              {
+                "recordset": "actor",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "customer",
+            "kind": "entity",
+            "label": "Customer",
+            "description": "A person registered to rent from a store.",
+            "extends": "meaning://github.com/meaninggraph/core/customer?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+            "bindings": [
+              {
+                "recordset": "customer",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "employee",
+            "kind": "entity",
+            "label": "Staff member",
+            "description": "An employee who manages stores or processes rentals and payments.",
+            "extends": "meaning://github.com/meaninggraph/core/employee?ref=982916d73f0a35ff2558b0062f58aa3ac4f24d97",
+            "bindings": [
+              {
+                "recordset": "staff",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "film",
+            "kind": "entity",
+            "label": "Film",
+            "description": "A title in the rental catalogue.",
+            "bindings": [
+              {
+                "recordset": "film",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "store",
+            "kind": "entity",
+            "label": "Store",
+            "description": "A location that holds and rents film inventory.",
+            "bindings": [
+              {
+                "recordset": "store",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "rental",
+            "kind": "entity",
+            "label": "Rental",
+            "description": "A customer's rental of one item of film inventory.",
+            "bindings": [
+              {
+                "recordset": "rental",
+                "role": "entity"
+              }
+            ]
+          },
+          {
+            "id": "payment",
+            "kind": "entity",
+            "label": "Payment",
+            "description": "A payment recorded for a rental transaction.",
+            "bindings": [
+              {
+                "recordset": "payment",
+                "role": "entity"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "schema": {
+    "contractVersion": 1,
+    "database": {
+      "id": "sakila",
+      "name": "Sakila"
+    },
+    "source": {
+      "repository": "https://downloads.mysql.com/docs/sakila-db.zip",
+      "version": "Sakila 1.5",
+      "revision": "sha256:ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+      "path": "sakila-db/sakila-schema.sql and sakila-db/sakila-data.sql",
+      "archiveSha256": "ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+      "license": "BSD-3-Clause",
+      "licenseFile": "data-source/sakila-schema.sql",
+      "recipe": [
+        {
+          "path": "data-source/sakila-schema.sql",
+          "sha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915",
+          "sourceSha256": "b32170e1e2ad5828749b61a5ec896155bcd143104b076e5ee8a3a3b013f44915"
+        },
+        {
+          "path": "data-source/sakila-data.sql",
+          "sha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174",
+          "sourceSha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174"
+        }
+      ],
+      "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, six views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
+      "databaseSha256": "7a7889aca95e69b1be9e78fb05f5da7200d14aea94738ec34714a43e77860ef1"
+    },
+    "blobEncoding": "base64",
+    "modelingLimitations": [],
+    "tables": [
+      {
+        "name": "actor",
+        "modelEntity": "actor",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Performers available to be associated with films.",
+        "columns": [
+          {
+            "name": "actor_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "first_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "actor_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [],
+        "rowCount": 200,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"actor\" (actor_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+        "rows": [
+          {
+            "actor_id": 1,
+            "first_name": "PENELOPE",
+            "last_name": "GUINESS",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 2,
+            "first_name": "NICK",
+            "last_name": "WAHLBERG",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 3,
+            "first_name": "ED",
+            "last_name": "CHASE",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 4,
+            "first_name": "JENNIFER",
+            "last_name": "DAVIS",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 5,
+            "first_name": "JOHNNY",
+            "last_name": "LOLLOBRIGIDA",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 6,
+            "first_name": "BETTE",
+            "last_name": "NICHOLSON",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 7,
+            "first_name": "GRACE",
+            "last_name": "MOSTEL",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 8,
+            "first_name": "MATTHEW",
+            "last_name": "JOHANSSON",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 9,
+            "first_name": "JOE",
+            "last_name": "SWANK",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 10,
+            "first_name": "CHRISTIAN",
+            "last_name": "GABLE",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 11,
+            "first_name": "ZERO",
+            "last_name": "CAGE",
+            "last_update": "2006-02-15 04:34:33"
+          },
+          {
+            "actor_id": 12,
+            "first_name": "KARL",
+            "last_name": "BERRY",
+            "last_update": "2006-02-15 04:34:33"
+          }
+        ]
+      },
+      {
+        "name": "address",
+        "modelEntity": "address",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Customer, staff, and store addresses, including the source's location geometry as a binary value.",
+        "columns": [
+          {
+            "name": "address_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "address",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "address2",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "district",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "city_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "postal_code",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "phone",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "location",
+            "type": "BLOB",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null,
+            "description": "Original MySQL geometry payload retained byte-for-byte as raw WKB in a SQLite BLOB; no spatial extension or coordinate decoder is implied."
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "address_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "city_id",
+            "table": "city",
+            "referencedColumn": "city_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 603,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"address\" (address_id INTEGER PRIMARY KEY AUTOINCREMENT, address TEXT NOT NULL, address2 TEXT DEFAULT NULL, district TEXT NOT NULL, city_id INTEGER NOT NULL, postal_code TEXT DEFAULT NULL, phone TEXT NOT NULL, location BLOB NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (city_id) REFERENCES \"city\" (city_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "address_id": 1,
+            "address": "47 MySakila Drive",
+            "address2": null,
+            "district": "Alberta",
+            "city_id": 300,
+            "postal_code": "",
+            "phone": "",
+            "location": "AAAAAAEBAAAAPgoyXWM0XMB2H9uNmdlIQA==",
+            "last_update": "2014-09-25 22:30:27"
+          },
+          {
+            "address_id": 2,
+            "address": "28 MySQL Boulevard",
+            "address2": null,
+            "district": "QLD",
+            "city_id": 576,
+            "postal_code": "",
+            "phone": "",
+            "location": "AAAAAAEBAAAAjhDU34EkY0BO4IxQIqI7wA==",
+            "last_update": "2014-09-25 22:30:09"
+          },
+          {
+            "address_id": 3,
+            "address": "23 Workhaven Lane",
+            "address2": null,
+            "district": "Alberta",
+            "city_id": 300,
+            "postal_code": "",
+            "phone": "14033335568",
+            "location": "AAAAAAEBAAAAzcQZaGM0XMAd7n5wmdlIQA==",
+            "last_update": "2014-09-25 22:30:27"
+          },
+          {
+            "address_id": 4,
+            "address": "1411 Lillydale Drive",
+            "address2": null,
+            "district": "QLD",
+            "city_id": 576,
+            "postal_code": "",
+            "phone": "6172235589",
+            "location": "AAAAAAEBAAAAWw3kNB8mY0BC1q5kIqI7wA==",
+            "last_update": "2014-09-25 22:30:09"
+          },
+          {
+            "address_id": 5,
+            "address": "1913 Hanoi Way",
+            "address2": "",
+            "district": "Nagasaki",
+            "city_id": 463,
+            "postal_code": "35200",
+            "phone": "28303384290",
+            "location": "AAAAAAEBAAAAKNE3DiE3YECrtYvEX5RAQA==",
+            "last_update": "2014-09-25 22:31:53"
+          },
+          {
+            "address_id": 6,
+            "address": "1121 Loja Avenue",
+            "address2": "",
+            "district": "California",
+            "city_id": 449,
+            "postal_code": "17886",
+            "phone": "838635286649",
+            "location": "AAAAAAEBAAAAPJRXnYtSXcDoYEct3g1BQA==",
+            "last_update": "2014-09-25 22:34:01"
+          },
+          {
+            "address_id": 7,
+            "address": "692 Joliet Street",
+            "address2": "",
+            "district": "Attika",
+            "city_id": 38,
+            "postal_code": "83579",
+            "phone": "448477190408",
+            "location": "AAAAAAEBAAAAB29Zz1q3N0BBBdGkXv1CQA==",
+            "last_update": "2014-09-25 22:31:07"
+          },
+          {
+            "address_id": 8,
+            "address": "1566 Inegöl Manor",
+            "address2": "",
+            "district": "Mandalay",
+            "city_id": 349,
+            "postal_code": "53561",
+            "phone": "705814003527",
+            "location": "AAAAAAEBAAAABiQGJtzYV0A8RbNXxHU1QA==",
+            "last_update": "2014-09-25 22:32:18"
+          },
+          {
+            "address_id": 9,
+            "address": "53 Idfu Parkway",
+            "address2": "",
+            "district": "Nantou",
+            "city_id": 361,
+            "postal_code": "42399",
+            "phone": "10655648674",
+            "location": "AAAAAAEBAAAAH4E//HwqXkA1ejVAaeo3QA==",
+            "last_update": "2014-09-25 22:33:16"
+          },
+          {
+            "address_id": 10,
+            "address": "1795 Santiago de Compostela Way",
+            "address2": "",
+            "district": "Texas",
+            "city_id": 295,
+            "postal_code": "18743",
+            "phone": "860452626434",
+            "location": "AAAAAAEBAAAAUFAvnXvgWMDQz3kypIE7QA==",
+            "last_update": "2014-09-25 22:33:55"
+          },
+          {
+            "address_id": 11,
+            "address": "900 Santiago de Compostela Parkway",
+            "address2": "",
+            "district": "Central Serbia",
+            "city_id": 280,
+            "postal_code": "93896",
+            "phone": "716571220373",
+            "location": "AAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+            "last_update": "2014-09-25 22:34:11"
+          },
+          {
+            "address_id": 12,
+            "address": "478 Joliet Way",
+            "address2": "",
+            "district": "Hamilton",
+            "city_id": 200,
+            "postal_code": "77948",
+            "phone": "657282285970",
+            "location": "AAAAAAEBAAAA3ITWHhHpZUBytzUzRORCwA==",
+            "last_update": "2014-09-25 22:32:22"
+          }
+        ]
+      },
+      {
+        "name": "category",
+        "modelEntity": "category",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Film categories used to classify the catalogue.",
+        "columns": [
+          {
+            "name": "category_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "category_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [],
+        "rowCount": 16,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"category\" (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+        "rows": [
+          {
+            "category_id": 1,
+            "name": "Action",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 2,
+            "name": "Animation",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 3,
+            "name": "Children",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 4,
+            "name": "Classics",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 5,
+            "name": "Comedy",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 6,
+            "name": "Documentary",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 7,
+            "name": "Drama",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 8,
+            "name": "Family",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 9,
+            "name": "Foreign",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 10,
+            "name": "Games",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 11,
+            "name": "Horror",
+            "last_update": "2006-02-15 04:46:27"
+          },
+          {
+            "category_id": 12,
+            "name": "Music",
+            "last_update": "2006-02-15 04:46:27"
+          }
+        ]
+      },
+      {
+        "name": "city",
+        "modelEntity": "city",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Cities associated with addresses and countries.",
+        "columns": [
+          {
+            "name": "city_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "city",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "country_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "city_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "country_id",
+            "table": "country",
+            "referencedColumn": "country_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 600,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"city\" (city_id INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT NOT NULL, country_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (country_id) REFERENCES \"country\" (country_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "city_id": 1,
+            "city": "A Coruña (La Coruña)",
+            "country_id": 87,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 2,
+            "city": "Abha",
+            "country_id": 82,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 3,
+            "city": "Abu Dhabi",
+            "country_id": 101,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 4,
+            "city": "Acuña",
+            "country_id": 60,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 5,
+            "city": "Adana",
+            "country_id": 97,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 6,
+            "city": "Addis Abeba",
+            "country_id": 31,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 7,
+            "city": "Aden",
+            "country_id": 107,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 8,
+            "city": "Adoni",
+            "country_id": 44,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 9,
+            "city": "Ahmadnagar",
+            "country_id": 44,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 10,
+            "city": "Akishima",
+            "country_id": 50,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 11,
+            "city": "Akron",
+            "country_id": 103,
+            "last_update": "2006-02-15 04:45:25"
+          },
+          {
+            "city_id": 12,
+            "city": "al-Ayn",
+            "country_id": 101,
+            "last_update": "2006-02-15 04:45:25"
+          }
+        ]
+      },
+      {
+        "name": "country",
+        "modelEntity": "country",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Countries associated with cities.",
+        "columns": [
+          {
+            "name": "country_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "country",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "country_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [],
+        "rowCount": 109,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"country\" (country_id INTEGER PRIMARY KEY AUTOINCREMENT, country TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+        "rows": [
+          {
+            "country_id": 1,
+            "country": "Afghanistan",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 2,
+            "country": "Algeria",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 3,
+            "country": "American Samoa",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 4,
+            "country": "Angola",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 5,
+            "country": "Anguilla",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 6,
+            "country": "Argentina",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 7,
+            "country": "Armenia",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 8,
+            "country": "Australia",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 9,
+            "country": "Austria",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 10,
+            "country": "Azerbaijan",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 11,
+            "country": "Bahrain",
+            "last_update": "2006-02-15 04:44:00"
+          },
+          {
+            "country_id": 12,
+            "country": "Bangladesh",
+            "last_update": "2006-02-15 04:44:00"
+          }
+        ]
+      },
+      {
+        "name": "customer",
+        "modelEntity": "customer",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "People registered to rent films from a store.",
+        "columns": [
+          {
+            "name": "customer_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "store_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "first_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "email",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "address_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "active",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "1"
+          },
+          {
+            "name": "create_date",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "customer_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "store_id",
+            "table": "store",
+            "referencedColumn": "store_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "address_id",
+            "table": "address",
+            "referencedColumn": "address_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 599,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"customer\" (customer_id INTEGER PRIMARY KEY AUTOINCREMENT, store_id INTEGER NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT DEFAULT NULL, address_id INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1, create_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "customer_id": 1,
+            "store_id": 1,
+            "first_name": "MARY",
+            "last_name": "SMITH",
+            "email": "MARY.SMITH@sakilacustomer.org",
+            "address_id": 5,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 2,
+            "store_id": 1,
+            "first_name": "PATRICIA",
+            "last_name": "JOHNSON",
+            "email": "PATRICIA.JOHNSON@sakilacustomer.org",
+            "address_id": 6,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 3,
+            "store_id": 1,
+            "first_name": "LINDA",
+            "last_name": "WILLIAMS",
+            "email": "LINDA.WILLIAMS@sakilacustomer.org",
+            "address_id": 7,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 4,
+            "store_id": 2,
+            "first_name": "BARBARA",
+            "last_name": "JONES",
+            "email": "BARBARA.JONES@sakilacustomer.org",
+            "address_id": 8,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 5,
+            "store_id": 1,
+            "first_name": "ELIZABETH",
+            "last_name": "BROWN",
+            "email": "ELIZABETH.BROWN@sakilacustomer.org",
+            "address_id": 9,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 6,
+            "store_id": 2,
+            "first_name": "JENNIFER",
+            "last_name": "DAVIS",
+            "email": "JENNIFER.DAVIS@sakilacustomer.org",
+            "address_id": 10,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 7,
+            "store_id": 1,
+            "first_name": "MARIA",
+            "last_name": "MILLER",
+            "email": "MARIA.MILLER@sakilacustomer.org",
+            "address_id": 11,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 8,
+            "store_id": 2,
+            "first_name": "SUSAN",
+            "last_name": "WILSON",
+            "email": "SUSAN.WILSON@sakilacustomer.org",
+            "address_id": 12,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 9,
+            "store_id": 2,
+            "first_name": "MARGARET",
+            "last_name": "MOORE",
+            "email": "MARGARET.MOORE@sakilacustomer.org",
+            "address_id": 13,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 10,
+            "store_id": 1,
+            "first_name": "DOROTHY",
+            "last_name": "TAYLOR",
+            "email": "DOROTHY.TAYLOR@sakilacustomer.org",
+            "address_id": 14,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 11,
+            "store_id": 2,
+            "first_name": "LISA",
+            "last_name": "ANDERSON",
+            "email": "LISA.ANDERSON@sakilacustomer.org",
+            "address_id": 15,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          },
+          {
+            "customer_id": 12,
+            "store_id": 1,
+            "first_name": "NANCY",
+            "last_name": "THOMAS",
+            "email": "NANCY.THOMAS@sakilacustomer.org",
+            "address_id": 16,
+            "active": 1,
+            "create_date": "2006-02-14 22:04:36",
+            "last_update": "2006-02-15 04:57:20"
+          }
+        ]
+      },
+      {
+        "name": "film",
+        "modelEntity": "film",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "The film catalogue, including language, rating, rental terms, and special features.",
+        "columns": [
+          {
+            "name": "film_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "title",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "release_year",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "language_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "original_language_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "rental_duration",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "3"
+          },
+          {
+            "name": "rental_rate",
+            "type": "NUMERIC",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "4.99"
+          },
+          {
+            "name": "length",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "replacement_cost",
+            "type": "NUMERIC",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "19.99"
+          },
+          {
+            "name": "rating",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "'G'",
+            "description": "Source ENUM values stored as text; SQLite does not enforce the original allowed-value set."
+          },
+          {
+            "name": "special_features",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL",
+            "description": "Source SET values stored as text; SQLite does not enforce the original allowed-value set."
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "film_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "original_language_id",
+            "table": "language",
+            "referencedColumn": "language_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "language_id",
+            "table": "language",
+            "referencedColumn": "language_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 1000,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"film\" (film_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, description TEXT DEFAULT NULL, release_year TEXT DEFAULT NULL, language_id INTEGER NOT NULL, original_language_id INTEGER DEFAULT NULL, rental_duration INTEGER NOT NULL DEFAULT 3, rental_rate NUMERIC NOT NULL DEFAULT 4.99, length INTEGER DEFAULT NULL, replacement_cost NUMERIC NOT NULL DEFAULT 19.99, rating TEXT DEFAULT 'G', special_features TEXT DEFAULT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (original_language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "film_id": 1,
+            "title": "ACADEMY DINOSAUR",
+            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 0.99,
+            "length": 86,
+            "replacement_cost": 20.99,
+            "rating": "PG",
+            "special_features": "Deleted Scenes,Behind the Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 2,
+            "title": "ACE GOLDFINGER",
+            "description": "A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 3,
+            "rental_rate": 4.99,
+            "length": 48,
+            "replacement_cost": 12.99,
+            "rating": "G",
+            "special_features": "Trailers,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 3,
+            "title": "ADAPTATION HOLES",
+            "description": "A Astounding Reflection of a Lumberjack And a Car who must Sink a Lumberjack in A Baloon Factory",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 7,
+            "rental_rate": 2.99,
+            "length": 50,
+            "replacement_cost": 18.99,
+            "rating": "NC-17",
+            "special_features": "Trailers,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 4,
+            "title": "AFFAIR PREJUDICE",
+            "description": "A Fanciful Documentary of a Frisbee And a Lumberjack who must Chase a Monkey in A Shark Tank",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 5,
+            "rental_rate": 2.99,
+            "length": 117,
+            "replacement_cost": 26.99,
+            "rating": "G",
+            "special_features": "Commentaries,Behind the Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 5,
+            "title": "AFRICAN EGG",
+            "description": "A Fast-Paced Documentary of a Pastry Chef And a Dentist who must Pursue a Forensic Psychologist in The Gulf of Mexico",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 2.99,
+            "length": 130,
+            "replacement_cost": 22.99,
+            "rating": "G",
+            "special_features": "Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 6,
+            "title": "AGENT TRUMAN",
+            "description": "A Intrepid Panorama of a Robot And a Boy who must Escape a Sumo Wrestler in Ancient China",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 3,
+            "rental_rate": 2.99,
+            "length": 169,
+            "replacement_cost": 17.99,
+            "rating": "PG",
+            "special_features": "Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 7,
+            "title": "AIRPLANE SIERRA",
+            "description": "A Touching Saga of a Hunter And a Butler who must Discover a Butler in A Jet Boat",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 4.99,
+            "length": 62,
+            "replacement_cost": 28.99,
+            "rating": "PG-13",
+            "special_features": "Trailers,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 8,
+            "title": "AIRPORT POLLOCK",
+            "description": "A Epic Tale of a Moose And a Girl who must Confront a Monkey in Ancient India",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 4.99,
+            "length": 54,
+            "replacement_cost": 15.99,
+            "rating": "R",
+            "special_features": "Trailers",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 9,
+            "title": "ALABAMA DEVIL",
+            "description": "A Thoughtful Panorama of a Database Administrator And a Mad Scientist who must Outgun a Mad Scientist in A Jet Boat",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 3,
+            "rental_rate": 2.99,
+            "length": 114,
+            "replacement_cost": 21.99,
+            "rating": "PG-13",
+            "special_features": "Trailers,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 10,
+            "title": "ALADDIN CALENDAR",
+            "description": "A Action-Packed Tale of a Man And a Lumberjack who must Reach a Feminist in Ancient China",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 4.99,
+            "length": 63,
+            "replacement_cost": 24.99,
+            "rating": "NC-17",
+            "special_features": "Trailers,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 11,
+            "title": "ALAMO VIDEOTAPE",
+            "description": "A Boring Epistle of a Butler And a Cat who must Fight a Pastry Chef in A MySQL Convention",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 0.99,
+            "length": 126,
+            "replacement_cost": 16.99,
+            "rating": "G",
+            "special_features": "Commentaries,Behind the Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          },
+          {
+            "film_id": 12,
+            "title": "ALASKA PHANTOM",
+            "description": "A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia",
+            "release_year": "2006",
+            "language_id": 1,
+            "original_language_id": null,
+            "rental_duration": 6,
+            "rental_rate": 0.99,
+            "length": 136,
+            "replacement_cost": 22.99,
+            "rating": "PG",
+            "special_features": "Commentaries,Deleted Scenes",
+            "last_update": "2006-02-15 05:03:42"
+          }
+        ]
+      },
+      {
+        "name": "film_actor",
+        "modelEntity": "film_actor",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "The many-to-many association between films and actors.",
+        "columns": [
+          {
+            "name": "actor_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "film_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": true,
+            "primaryKeyOrder": 2,
+            "primaryKeyPosition": 2,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "actor_id",
+            "position": 1
+          },
+          {
+            "column": "film_id",
+            "position": 2
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "film_id",
+            "table": "film",
+            "referencedColumn": "film_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "actor_id",
+            "table": "actor",
+            "referencedColumn": "actor_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 5462,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"film_actor\" (actor_id INTEGER NOT NULL, film_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (actor_id,film_id), FOREIGN KEY (actor_id) REFERENCES \"actor\" (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "actor_id": 1,
+            "film_id": 1,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 23,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 25,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 106,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 140,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 166,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 277,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 361,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 438,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 499,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 506,
+            "last_update": "2006-02-15 05:05:03"
+          },
+          {
+            "actor_id": 1,
+            "film_id": 509,
+            "last_update": "2006-02-15 05:05:03"
+          }
+        ]
+      },
+      {
+        "name": "film_category",
+        "modelEntity": "film_category",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "The many-to-many association between films and categories.",
+        "columns": [
+          {
+            "name": "film_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "category_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": true,
+            "primaryKeyOrder": 2,
+            "primaryKeyPosition": 2,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "film_id",
+            "position": 1
+          },
+          {
+            "column": "category_id",
+            "position": 2
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "category_id",
+            "table": "category",
+            "referencedColumn": "category_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "film_id",
+            "table": "film",
+            "referencedColumn": "film_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 1000,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"film_category\" (film_id INTEGER NOT NULL, category_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (film_id, category_id), FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (category_id) REFERENCES \"category\" (category_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "film_id": 1,
+            "category_id": 6,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 2,
+            "category_id": 11,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 3,
+            "category_id": 6,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 4,
+            "category_id": 11,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 5,
+            "category_id": 8,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 6,
+            "category_id": 9,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 7,
+            "category_id": 5,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 8,
+            "category_id": 11,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 9,
+            "category_id": 11,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 10,
+            "category_id": 15,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 11,
+            "category_id": 9,
+            "last_update": "2006-02-15 05:07:09"
+          },
+          {
+            "film_id": 12,
+            "category_id": 12,
+            "last_update": "2006-02-15 05:07:09"
+          }
+        ]
+      },
+      {
+        "name": "film_text",
+        "modelEntity": "film_text",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Search-oriented title and description copy maintained from the film catalogue by the source trigger.",
+        "columns": [
+          {
+            "name": "film_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "title",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "film_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [],
+        "rowCount": 1000,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"film_text\" (film_id INTEGER NOT NULL, title TEXT NOT NULL, description TEXT, PRIMARY KEY (film_id))",
+        "rows": [
+          {
+            "film_id": 1,
+            "title": "ACADEMY DINOSAUR",
+            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies"
+          },
+          {
+            "film_id": 2,
+            "title": "ACE GOLDFINGER",
+            "description": "A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China"
+          },
+          {
+            "film_id": 3,
+            "title": "ADAPTATION HOLES",
+            "description": "A Astounding Reflection of a Lumberjack And a Car who must Sink a Lumberjack in A Baloon Factory"
+          },
+          {
+            "film_id": 4,
+            "title": "AFFAIR PREJUDICE",
+            "description": "A Fanciful Documentary of a Frisbee And a Lumberjack who must Chase a Monkey in A Shark Tank"
+          },
+          {
+            "film_id": 5,
+            "title": "AFRICAN EGG",
+            "description": "A Fast-Paced Documentary of a Pastry Chef And a Dentist who must Pursue a Forensic Psychologist in The Gulf of Mexico"
+          },
+          {
+            "film_id": 6,
+            "title": "AGENT TRUMAN",
+            "description": "A Intrepid Panorama of a Robot And a Boy who must Escape a Sumo Wrestler in Ancient China"
+          },
+          {
+            "film_id": 7,
+            "title": "AIRPLANE SIERRA",
+            "description": "A Touching Saga of a Hunter And a Butler who must Discover a Butler in A Jet Boat"
+          },
+          {
+            "film_id": 8,
+            "title": "AIRPORT POLLOCK",
+            "description": "A Epic Tale of a Moose And a Girl who must Confront a Monkey in Ancient India"
+          },
+          {
+            "film_id": 9,
+            "title": "ALABAMA DEVIL",
+            "description": "A Thoughtful Panorama of a Database Administrator And a Mad Scientist who must Outgun a Mad Scientist in A Jet Boat"
+          },
+          {
+            "film_id": 10,
+            "title": "ALADDIN CALENDAR",
+            "description": "A Action-Packed Tale of a Man And a Lumberjack who must Reach a Feminist in Ancient China"
+          },
+          {
+            "film_id": 11,
+            "title": "ALAMO VIDEOTAPE",
+            "description": "A Boring Epistle of a Butler And a Cat who must Fight a Pastry Chef in A MySQL Convention"
+          },
+          {
+            "film_id": 12,
+            "title": "ALASKA PHANTOM",
+            "description": "A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia"
+          }
+        ]
+      },
+      {
+        "name": "inventory",
+        "modelEntity": "inventory",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Film copies held by stores and available for rental.",
+        "columns": [
+          {
+            "name": "inventory_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "film_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "store_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "inventory_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "film_id",
+            "table": "film",
+            "referencedColumn": "film_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "store_id",
+            "table": "store",
+            "referencedColumn": "store_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 4581,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"inventory\" (inventory_id INTEGER PRIMARY KEY AUTOINCREMENT, film_id INTEGER NOT NULL, store_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "inventory_id": 1,
+            "film_id": 1,
+            "store_id": 1,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 2,
+            "film_id": 1,
+            "store_id": 1,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 3,
+            "film_id": 1,
+            "store_id": 1,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 4,
+            "film_id": 1,
+            "store_id": 1,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 5,
+            "film_id": 1,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 6,
+            "film_id": 1,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 7,
+            "film_id": 1,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 8,
+            "film_id": 1,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 9,
+            "film_id": 2,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 10,
+            "film_id": 2,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 11,
+            "film_id": 2,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          },
+          {
+            "inventory_id": 12,
+            "film_id": 3,
+            "store_id": 2,
+            "last_update": "2006-02-15 05:09:17"
+          }
+        ]
+      },
+      {
+        "name": "language",
+        "modelEntity": "language",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Languages used for original and dubbed films.",
+        "columns": [
+          {
+            "name": "language_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "language_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [],
+        "rowCount": 6,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"language\" (language_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+        "rows": [
+          {
+            "language_id": 1,
+            "name": "English",
+            "last_update": "2006-02-15 05:02:19"
+          },
+          {
+            "language_id": 2,
+            "name": "Italian",
+            "last_update": "2006-02-15 05:02:19"
+          },
+          {
+            "language_id": 3,
+            "name": "Japanese",
+            "last_update": "2006-02-15 05:02:19"
+          },
+          {
+            "language_id": 4,
+            "name": "Mandarin",
+            "last_update": "2006-02-15 05:02:19"
+          },
+          {
+            "language_id": 5,
+            "name": "French",
+            "last_update": "2006-02-15 05:02:19"
+          },
+          {
+            "language_id": 6,
+            "name": "German",
+            "last_update": "2006-02-15 05:02:19"
+          }
+        ]
+      },
+      {
+        "name": "payment",
+        "modelEntity": "payment",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Customer payments recorded for rentals and staff transactions.",
+        "columns": [
+          {
+            "name": "payment_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "customer_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "staff_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "rental_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "amount",
+            "type": "NUMERIC",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "payment_date",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "payment_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "staff_id",
+            "table": "staff",
+            "referencedColumn": "staff_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "customer_id",
+            "table": "customer",
+            "referencedColumn": "customer_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "rental_id",
+            "table": "rental",
+            "referencedColumn": "rental_id",
+            "constraint": 2,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "SET NULL",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 16044,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"payment\" (payment_id INTEGER PRIMARY KEY AUTOINCREMENT, customer_id INTEGER NOT NULL, staff_id INTEGER NOT NULL, rental_id INTEGER DEFAULT NULL, amount NUMERIC NOT NULL, payment_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (rental_id) REFERENCES \"rental\" (rental_id) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "payment_id": 1,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 76,
+            "amount": 2.99,
+            "payment_date": "2005-05-25 11:30:37",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 2,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 573,
+            "amount": 0.99,
+            "payment_date": "2005-05-28 10:35:23",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 3,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 1185,
+            "amount": 5.99,
+            "payment_date": "2005-06-15 00:54:12",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 4,
+            "customer_id": 1,
+            "staff_id": 2,
+            "rental_id": 1422,
+            "amount": 0.99,
+            "payment_date": "2005-06-15 18:02:53",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 5,
+            "customer_id": 1,
+            "staff_id": 2,
+            "rental_id": 1476,
+            "amount": 9.99,
+            "payment_date": "2005-06-15 21:08:46",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 6,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 1725,
+            "amount": 4.99,
+            "payment_date": "2005-06-16 15:18:57",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 7,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 2308,
+            "amount": 4.99,
+            "payment_date": "2005-06-18 08:41:48",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 8,
+            "customer_id": 1,
+            "staff_id": 2,
+            "rental_id": 2363,
+            "amount": 0.99,
+            "payment_date": "2005-06-18 13:33:59",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 9,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 3284,
+            "amount": 3.99,
+            "payment_date": "2005-06-21 06:24:45",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 10,
+            "customer_id": 1,
+            "staff_id": 2,
+            "rental_id": 4526,
+            "amount": 5.99,
+            "payment_date": "2005-07-08 03:17:05",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 11,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 4611,
+            "amount": 5.99,
+            "payment_date": "2005-07-08 07:33:56",
+            "last_update": "2006-02-15 22:12:30"
+          },
+          {
+            "payment_id": 12,
+            "customer_id": 1,
+            "staff_id": 1,
+            "rental_id": 5244,
+            "amount": 4.99,
+            "payment_date": "2005-07-09 13:24:07",
+            "last_update": "2006-02-15 22:12:30"
+          }
+        ]
+      },
+      {
+        "name": "rental",
+        "modelEntity": "rental",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Film inventory rentals by customers and staff.",
+        "columns": [
+          {
+            "name": "rental_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "rental_date",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "inventory_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "customer_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "return_date",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "staff_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "rental_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "customer_id",
+            "table": "customer",
+            "referencedColumn": "customer_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "inventory_id",
+            "table": "inventory",
+            "referencedColumn": "inventory_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "staff_id",
+            "table": "staff",
+            "referencedColumn": "staff_id",
+            "constraint": 2,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 16044,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"rental\" (rental_id INTEGER PRIMARY KEY AUTOINCREMENT, rental_date TEXT NOT NULL, inventory_id INTEGER NOT NULL, customer_id INTEGER NOT NULL, return_date TEXT DEFAULT NULL, staff_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (inventory_id) REFERENCES \"inventory\" (inventory_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "rental_id": 1,
+            "rental_date": "2005-05-24 22:53:30",
+            "inventory_id": 367,
+            "customer_id": 130,
+            "return_date": "2005-05-26 22:04:30",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 2,
+            "rental_date": "2005-05-24 22:54:33",
+            "inventory_id": 1525,
+            "customer_id": 459,
+            "return_date": "2005-05-28 19:40:33",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 3,
+            "rental_date": "2005-05-24 23:03:39",
+            "inventory_id": 1711,
+            "customer_id": 408,
+            "return_date": "2005-06-01 22:12:39",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 4,
+            "rental_date": "2005-05-24 23:04:41",
+            "inventory_id": 2452,
+            "customer_id": 333,
+            "return_date": "2005-06-03 01:43:41",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 5,
+            "rental_date": "2005-05-24 23:05:21",
+            "inventory_id": 2079,
+            "customer_id": 222,
+            "return_date": "2005-06-02 04:33:21",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 6,
+            "rental_date": "2005-05-24 23:08:07",
+            "inventory_id": 2792,
+            "customer_id": 549,
+            "return_date": "2005-05-27 01:32:07",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 7,
+            "rental_date": "2005-05-24 23:11:53",
+            "inventory_id": 3995,
+            "customer_id": 269,
+            "return_date": "2005-05-29 20:34:53",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 8,
+            "rental_date": "2005-05-24 23:31:46",
+            "inventory_id": 2346,
+            "customer_id": 239,
+            "return_date": "2005-05-27 23:33:46",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 9,
+            "rental_date": "2005-05-25 00:00:40",
+            "inventory_id": 2580,
+            "customer_id": 126,
+            "return_date": "2005-05-28 00:22:40",
+            "staff_id": 1,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 10,
+            "rental_date": "2005-05-25 00:02:21",
+            "inventory_id": 1824,
+            "customer_id": 399,
+            "return_date": "2005-05-31 22:44:21",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 11,
+            "rental_date": "2005-05-25 00:09:02",
+            "inventory_id": 4443,
+            "customer_id": 142,
+            "return_date": "2005-06-02 20:56:02",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          },
+          {
+            "rental_id": 12,
+            "rental_date": "2005-05-25 00:19:27",
+            "inventory_id": 1584,
+            "customer_id": 261,
+            "return_date": "2005-05-30 05:44:27",
+            "staff_id": 2,
+            "last_update": "2006-02-15 21:30:53"
+          }
+        ]
+      },
+      {
+        "name": "staff",
+        "modelEntity": "staff",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Store staff, including source PNG profile pictures stored as BLOBs.",
+        "columns": [
+          {
+            "name": "staff_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "first_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_name",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "address_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "picture",
+            "type": "BLOB",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL",
+            "description": "Original PNG bytes stored as a BLOB; JSON and CSV exports encode this value as base64."
+          },
+          {
+            "name": "email",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "store_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "active",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "1"
+          },
+          {
+            "name": "username",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "password",
+            "type": "TEXT",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "NULL"
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "staff_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "address_id",
+            "table": "address",
+            "referencedColumn": "address_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "store_id",
+            "table": "store",
+            "referencedColumn": "store_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 2,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"staff\" (staff_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, address_id INTEGER NOT NULL, picture BLOB DEFAULT NULL, email TEXT DEFAULT NULL, store_id INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1, username TEXT NOT NULL, password TEXT DEFAULT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "staff_id": 1,
+            "first_name": "Mike",
+            "last_name": "Hillyer",
+            "address_id": 3,
+            "picture": "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",
+            "email": "Mike.Hillyer@sakilastaff.com",
+            "store_id": 1,
+            "active": 1,
+            "username": "Mike",
+            "password": "8cb2237d0679ca88db6464eac60da96345513964",
+            "last_update": "2006-02-15 03:57:16"
+          },
+          {
+            "staff_id": 2,
+            "first_name": "Jon",
+            "last_name": "Stephens",
+            "address_id": 4,
+            "picture": null,
+            "email": "Jon.Stephens@sakilastaff.com",
+            "store_id": 2,
+            "active": 1,
+            "username": "Jon",
+            "password": null,
+            "last_update": "2006-02-15 03:57:16"
+          }
+        ]
+      },
+      {
+        "name": "store",
+        "modelEntity": "store",
+        "modelRecordset": null,
+        "kind": "table",
+        "description": "Rental locations and their managers.",
+        "columns": [
+          {
+            "name": "store_id",
+            "type": "INTEGER",
+            "nullable": true,
+            "primaryKey": true,
+            "primaryKeyOrder": 1,
+            "primaryKeyPosition": 1,
+            "defaultValue": null
+          },
+          {
+            "name": "manager_staff_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "address_id",
+            "type": "INTEGER",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "last_update",
+            "type": "TEXT",
+            "nullable": false,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          }
+        ],
+        "primaryKey": [
+          {
+            "column": "store_id",
+            "position": 1
+          }
+        ],
+        "foreignKeys": [
+          {
+            "column": "address_id",
+            "table": "address",
+            "referencedColumn": "address_id",
+            "constraint": 0,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          },
+          {
+            "column": "manager_staff_id",
+            "table": "staff",
+            "referencedColumn": "staff_id",
+            "constraint": 1,
+            "position": 0,
+            "onUpdate": "CASCADE",
+            "onDelete": "RESTRICT",
+            "match": "NONE"
+          }
+        ],
+        "rowCount": 2,
+        "viewSql": null,
+        "tableSql": "CREATE TABLE \"store\" (store_id INTEGER PRIMARY KEY AUTOINCREMENT, manager_staff_id INTEGER NOT NULL, address_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (manager_staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+        "rows": [
+          {
+            "store_id": 1,
+            "manager_staff_id": 1,
+            "address_id": 1,
+            "last_update": "2006-02-15 04:57:12"
+          },
+          {
+            "store_id": 2,
+            "manager_staff_id": 2,
+            "address_id": 2,
+            "last_update": "2006-02-15 04:57:12"
+          }
+        ]
+      },
+      {
+        "name": "customer_list",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "ID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "address",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "zip code",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "phone",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "city",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "country",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "notes",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "SID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 599,
+        "viewSql": "CREATE VIEW \"customer_list\" AS SELECT cu.customer_id AS ID, concat(cu.first_name, ' ', cu.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, if(cu.active, 'active','') AS notes, cu.store_id AS SID FROM customer AS cu JOIN address AS a ON cu.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
+        "tableSql": null,
+        "rows": [
+          {
+            "ID": 1,
+            "name": "MARY SMITH",
+            "address": "1913 Hanoi Way",
+            "zip code": "35200",
+            "phone": "28303384290",
+            "city": "Sasebo",
+            "country": "Japan",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 2,
+            "name": "PATRICIA JOHNSON",
+            "address": "1121 Loja Avenue",
+            "zip code": "17886",
+            "phone": "838635286649",
+            "city": "San Bernardino",
+            "country": "United States",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 3,
+            "name": "LINDA WILLIAMS",
+            "address": "692 Joliet Street",
+            "zip code": "83579",
+            "phone": "448477190408",
+            "city": "Athenai",
+            "country": "Greece",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 4,
+            "name": "BARBARA JONES",
+            "address": "1566 Inegöl Manor",
+            "zip code": "53561",
+            "phone": "705814003527",
+            "city": "Myingyan",
+            "country": "Myanmar",
+            "notes": "active",
+            "SID": 2
+          },
+          {
+            "ID": 5,
+            "name": "ELIZABETH BROWN",
+            "address": "53 Idfu Parkway",
+            "zip code": "42399",
+            "phone": "10655648674",
+            "city": "Nantou",
+            "country": "Taiwan",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 6,
+            "name": "JENNIFER DAVIS",
+            "address": "1795 Santiago de Compostela Way",
+            "zip code": "18743",
+            "phone": "860452626434",
+            "city": "Laredo",
+            "country": "United States",
+            "notes": "active",
+            "SID": 2
+          },
+          {
+            "ID": 7,
+            "name": "MARIA MILLER",
+            "address": "900 Santiago de Compostela Parkway",
+            "zip code": "93896",
+            "phone": "716571220373",
+            "city": "Kragujevac",
+            "country": "Yugoslavia",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 8,
+            "name": "SUSAN WILSON",
+            "address": "478 Joliet Way",
+            "zip code": "77948",
+            "phone": "657282285970",
+            "city": "Hamilton",
+            "country": "New Zealand",
+            "notes": "active",
+            "SID": 2
+          },
+          {
+            "ID": 9,
+            "name": "MARGARET MOORE",
+            "address": "613 Korolev Drive",
+            "zip code": "45844",
+            "phone": "380657522649",
+            "city": "Masqat",
+            "country": "Oman",
+            "notes": "active",
+            "SID": 2
+          },
+          {
+            "ID": 10,
+            "name": "DOROTHY TAYLOR",
+            "address": "1531 Salé Drive",
+            "zip code": "53628",
+            "phone": "648856936185",
+            "city": "Esfahan",
+            "country": "Iran",
+            "notes": "active",
+            "SID": 1
+          },
+          {
+            "ID": 11,
+            "name": "LISA ANDERSON",
+            "address": "1542 Tarlac Parkway",
+            "zip code": "1027",
+            "phone": "635297277345",
+            "city": "Sagamihara",
+            "country": "Japan",
+            "notes": "active",
+            "SID": 2
+          },
+          {
+            "ID": 12,
+            "name": "NANCY THOMAS",
+            "address": "808 Bhopal Manor",
+            "zip code": "10672",
+            "phone": "465887807014",
+            "city": "Yamuna Nagar",
+            "country": "India",
+            "notes": "active",
+            "SID": 1
+          }
+        ]
+      },
+      {
+        "name": "film_list",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "FID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "title",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "price",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "length",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "rating",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "actors",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 1000,
+        "viewSql": "CREATE VIEW \"film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(concat(actor.first_name, ' ', actor.last_name), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
+        "tableSql": null,
+        "rows": [
+          {
+            "FID": 1,
+            "title": "ACADEMY DINOSAUR",
+            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies",
+            "category": "Documentary",
+            "price": 0.99,
+            "length": 86,
+            "rating": "PG",
+            "actors": "PENELOPE GUINESS, CHRISTIAN GABLE, LUCILLE TRACY, SANDRA PECK, JOHNNY CAGE, MENA TEMPLE, WARREN NOLTE, OPRAH KILMER, ROCK DUKAKIS, MARY KEITEL"
+          },
+          {
+            "FID": 2,
+            "title": "ACE GOLDFINGER",
+            "description": "A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China",
+            "category": "Horror",
+            "price": 4.99,
+            "length": 48,
+            "rating": "G",
+            "actors": "BOB FAWCETT, MINNIE ZELLWEGER, SEAN GUINESS, CHRIS DEPP"
+          },
+          {
+            "FID": 3,
+            "title": "ADAPTATION HOLES",
+            "description": "A Astounding Reflection of a Lumberjack And a Car who must Sink a Lumberjack in A Baloon Factory",
+            "category": "Documentary",
+            "price": 2.99,
+            "length": 50,
+            "rating": "NC-17",
+            "actors": "NICK WAHLBERG, BOB FAWCETT, CAMERON STREEP, RAY JOHANSSON, JULIANNE DENCH"
+          },
+          {
+            "FID": 4,
+            "title": "AFFAIR PREJUDICE",
+            "description": "A Fanciful Documentary of a Frisbee And a Lumberjack who must Chase a Monkey in A Shark Tank",
+            "category": "Horror",
+            "price": 2.99,
+            "length": 117,
+            "rating": "G",
+            "actors": "JODIE DEGENERES, SCARLETT DAMON, KENNETH PESCI, FAY WINSLET, OPRAH KILMER"
+          },
+          {
+            "FID": 5,
+            "title": "AFRICAN EGG",
+            "description": "A Fast-Paced Documentary of a Pastry Chef And a Dentist who must Pursue a Forensic Psychologist in The Gulf of Mexico",
+            "category": "Family",
+            "price": 2.99,
+            "length": 130,
+            "rating": "G",
+            "actors": "GARY PHOENIX, DUSTIN TAUTOU, MATTHEW LEIGH, MATTHEW CARREY, THORA TEMPLE"
+          },
+          {
+            "FID": 6,
+            "title": "AGENT TRUMAN",
+            "description": "A Intrepid Panorama of a Robot And a Boy who must Escape a Sumo Wrestler in Ancient China",
+            "category": "Foreign",
+            "price": 2.99,
+            "length": 169,
+            "rating": "PG",
+            "actors": "KIRSTEN PALTROW, SANDRA KILMER, JAYNE NEESON, WARREN NOLTE, MORGAN WILLIAMS, KENNETH HOFFMAN, REESE WEST"
+          },
+          {
+            "FID": 7,
+            "title": "AIRPLANE SIERRA",
+            "description": "A Touching Saga of a Hunter And a Butler who must Discover a Butler in A Jet Boat",
+            "category": "Comedy",
+            "price": 4.99,
+            "length": 62,
+            "rating": "PG-13",
+            "actors": "JIM MOSTEL, RICHARD PENN, OPRAH KILMER, MENA HOPPER, MICHAEL BOLGER"
+          },
+          {
+            "FID": 8,
+            "title": "AIRPORT POLLOCK",
+            "description": "A Epic Tale of a Moose And a Girl who must Confront a Monkey in Ancient India",
+            "category": "Horror",
+            "price": 4.99,
+            "length": 54,
+            "rating": "R",
+            "actors": "FAY KILMER, GENE WILLIS, SUSAN DAVIS, LUCILLE DEE"
+          },
+          {
+            "FID": 9,
+            "title": "ALABAMA DEVIL",
+            "description": "A Thoughtful Panorama of a Database Administrator And a Mad Scientist who must Outgun a Mad Scientist in A Jet Boat",
+            "category": "Horror",
+            "price": 2.99,
+            "length": 114,
+            "rating": "PG-13",
+            "actors": "CHRISTIAN GABLE, ELVIS MARX, RIP CRAWFORD, MENA TEMPLE, RIP WINSLET, WARREN NOLTE, GRETA KEITEL, WILLIAM HACKMAN, MERYL ALLEN"
+          },
+          {
+            "FID": 10,
+            "title": "ALADDIN CALENDAR",
+            "description": "A Action-Packed Tale of a Man And a Lumberjack who must Reach a Feminist in Ancient China",
+            "category": "Sports",
+            "price": 4.99,
+            "length": 63,
+            "rating": "NC-17",
+            "actors": "ALEC WAYNE, JUDY DEAN, VAL BOLGER, RAY JOHANSSON, RENEE TRACY, JADA RYDER, GRETA MALDEN, ROCK DUKAKIS"
+          },
+          {
+            "FID": 11,
+            "title": "ALAMO VIDEOTAPE",
+            "description": "A Boring Epistle of a Butler And a Cat who must Fight a Pastry Chef in A MySQL Convention",
+            "category": "Foreign",
+            "price": 0.99,
+            "length": 126,
+            "rating": "G",
+            "actors": "JOHNNY CAGE, SCARLETT DAMON, SEAN GUINESS, MICHAEL BENING"
+          },
+          {
+            "FID": 12,
+            "title": "ALASKA PHANTOM",
+            "description": "A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia",
+            "category": "Music",
+            "price": 0.99,
+            "length": 136,
+            "rating": "PG",
+            "actors": "VAL BOLGER, BURT POSEY, SIDNEY CROWE, SYLVESTER DERN, ALBERT JOHANSSON, GENE MCKELLEN, JEFF SILVERSTONE"
+          }
+        ]
+      },
+      {
+        "name": "nicer_but_slower_film_list",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "FID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "title",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "description",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "category",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "price",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "length",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "rating",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "actors",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 1000,
+        "viewSql": "CREATE VIEW \"nicer_but_slower_film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(concat(concat(upper(SUBSTR(actor.first_name,1,1)), lower(SUBSTR(actor.first_name,2,LENGTH(actor.first_name))),' ',concat(upper(SUBSTR(actor.last_name,1,1)), lower(SUBSTR(actor.last_name,2,LENGTH(actor.last_name)))))), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name",
+        "tableSql": null,
+        "rows": [
+          {
+            "FID": 1,
+            "title": "ACADEMY DINOSAUR",
+            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies",
+            "category": "Documentary",
+            "price": 0.99,
+            "length": 86,
+            "rating": "PG",
+            "actors": "Penelope Guiness, Christian Gable, Lucille Tracy, Sandra Peck, Johnny Cage, Mena Temple, Warren Nolte, Oprah Kilmer, Rock Dukakis, Mary Keitel"
+          },
+          {
+            "FID": 2,
+            "title": "ACE GOLDFINGER",
+            "description": "A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China",
+            "category": "Horror",
+            "price": 4.99,
+            "length": 48,
+            "rating": "G",
+            "actors": "Bob Fawcett, Minnie Zellweger, Sean Guiness, Chris Depp"
+          },
+          {
+            "FID": 3,
+            "title": "ADAPTATION HOLES",
+            "description": "A Astounding Reflection of a Lumberjack And a Car who must Sink a Lumberjack in A Baloon Factory",
+            "category": "Documentary",
+            "price": 2.99,
+            "length": 50,
+            "rating": "NC-17",
+            "actors": "Nick Wahlberg, Bob Fawcett, Cameron Streep, Ray Johansson, Julianne Dench"
+          },
+          {
+            "FID": 4,
+            "title": "AFFAIR PREJUDICE",
+            "description": "A Fanciful Documentary of a Frisbee And a Lumberjack who must Chase a Monkey in A Shark Tank",
+            "category": "Horror",
+            "price": 2.99,
+            "length": 117,
+            "rating": "G",
+            "actors": "Jodie Degeneres, Scarlett Damon, Kenneth Pesci, Fay Winslet, Oprah Kilmer"
+          },
+          {
+            "FID": 5,
+            "title": "AFRICAN EGG",
+            "description": "A Fast-Paced Documentary of a Pastry Chef And a Dentist who must Pursue a Forensic Psychologist in The Gulf of Mexico",
+            "category": "Family",
+            "price": 2.99,
+            "length": 130,
+            "rating": "G",
+            "actors": "Gary Phoenix, Dustin Tautou, Matthew Leigh, Matthew Carrey, Thora Temple"
+          },
+          {
+            "FID": 6,
+            "title": "AGENT TRUMAN",
+            "description": "A Intrepid Panorama of a Robot And a Boy who must Escape a Sumo Wrestler in Ancient China",
+            "category": "Foreign",
+            "price": 2.99,
+            "length": 169,
+            "rating": "PG",
+            "actors": "Kirsten Paltrow, Sandra Kilmer, Jayne Neeson, Warren Nolte, Morgan Williams, Kenneth Hoffman, Reese West"
+          },
+          {
+            "FID": 7,
+            "title": "AIRPLANE SIERRA",
+            "description": "A Touching Saga of a Hunter And a Butler who must Discover a Butler in A Jet Boat",
+            "category": "Comedy",
+            "price": 4.99,
+            "length": 62,
+            "rating": "PG-13",
+            "actors": "Jim Mostel, Richard Penn, Oprah Kilmer, Mena Hopper, Michael Bolger"
+          },
+          {
+            "FID": 8,
+            "title": "AIRPORT POLLOCK",
+            "description": "A Epic Tale of a Moose And a Girl who must Confront a Monkey in Ancient India",
+            "category": "Horror",
+            "price": 4.99,
+            "length": 54,
+            "rating": "R",
+            "actors": "Fay Kilmer, Gene Willis, Susan Davis, Lucille Dee"
+          },
+          {
+            "FID": 9,
+            "title": "ALABAMA DEVIL",
+            "description": "A Thoughtful Panorama of a Database Administrator And a Mad Scientist who must Outgun a Mad Scientist in A Jet Boat",
+            "category": "Horror",
+            "price": 2.99,
+            "length": 114,
+            "rating": "PG-13",
+            "actors": "Christian Gable, Elvis Marx, Rip Crawford, Mena Temple, Rip Winslet, Warren Nolte, Greta Keitel, William Hackman, Meryl Allen"
+          },
+          {
+            "FID": 10,
+            "title": "ALADDIN CALENDAR",
+            "description": "A Action-Packed Tale of a Man And a Lumberjack who must Reach a Feminist in Ancient China",
+            "category": "Sports",
+            "price": 4.99,
+            "length": 63,
+            "rating": "NC-17",
+            "actors": "Alec Wayne, Judy Dean, Val Bolger, Ray Johansson, Renee Tracy, Jada Ryder, Greta Malden, Rock Dukakis"
+          },
+          {
+            "FID": 11,
+            "title": "ALAMO VIDEOTAPE",
+            "description": "A Boring Epistle of a Butler And a Cat who must Fight a Pastry Chef in A MySQL Convention",
+            "category": "Foreign",
+            "price": 0.99,
+            "length": 126,
+            "rating": "G",
+            "actors": "Johnny Cage, Scarlett Damon, Sean Guiness, Michael Bening"
+          },
+          {
+            "FID": 12,
+            "title": "ALASKA PHANTOM",
+            "description": "A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia",
+            "category": "Music",
+            "price": 0.99,
+            "length": 136,
+            "rating": "PG",
+            "actors": "Val Bolger, Burt Posey, Sidney Crowe, Sylvester Dern, Albert Johansson, Gene Mckellen, Jeff Silverstone"
+          }
+        ]
+      },
+      {
+        "name": "sales_by_film_category",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "category",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "total_sales",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 16,
+        "viewSql": "CREATE VIEW \"sales_by_film_category\" AS SELECT c.name AS category , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN film AS f ON i.film_id = f.film_id INNER JOIN film_category AS fc ON f.film_id = fc.film_id INNER JOIN category AS c ON fc.category_id = c.category_id GROUP BY c.name ORDER BY total_sales DESC",
+        "tableSql": null,
+        "rows": [
+          {
+            "category": "Action",
+            "total_sales": 4375.85
+          },
+          {
+            "category": "Animation",
+            "total_sales": 4656.3
+          },
+          {
+            "category": "Children",
+            "total_sales": 3655.55
+          },
+          {
+            "category": "Classics",
+            "total_sales": 3639.59
+          },
+          {
+            "category": "Comedy",
+            "total_sales": 4383.58
+          },
+          {
+            "category": "Documentary",
+            "total_sales": 4217.52
+          },
+          {
+            "category": "Drama",
+            "total_sales": 4587.39
+          },
+          {
+            "category": "Family",
+            "total_sales": 4226.070000000001
+          },
+          {
+            "category": "Foreign",
+            "total_sales": 4270.67
+          },
+          {
+            "category": "Games",
+            "total_sales": 4281.33
+          },
+          {
+            "category": "Horror",
+            "total_sales": 3722.54
+          },
+          {
+            "category": "Music",
+            "total_sales": 3417.7200000000003
+          }
+        ]
+      },
+      {
+        "name": "sales_by_store",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "store",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "manager",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "total_sales",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 2,
+        "viewSql": "CREATE VIEW \"sales_by_store\" AS SELECT concat(c.city, ',', cy.country) AS store , concat(m.first_name, ' ', m.last_name) AS manager , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN store AS s ON i.store_id = s.store_id INNER JOIN address AS a ON s.address_id = a.address_id INNER JOIN city AS c ON a.city_id = c.city_id INNER JOIN country AS cy ON c.country_id = cy.country_id INNER JOIN staff AS m ON s.manager_staff_id = m.staff_id GROUP BY s.store_id ORDER BY cy.country, c.city",
+        "tableSql": null,
+        "rows": [
+          {
+            "store": "Lethbridge,Canada",
+            "manager": "Mike Hillyer",
+            "total_sales": 33679.79
+          },
+          {
+            "store": "Woodridge,Australia",
+            "manager": "Jon Stephens",
+            "total_sales": 33726.770000000004
+          }
+        ]
+      },
+      {
+        "name": "staff_list",
+        "modelEntity": null,
+        "modelRecordset": null,
+        "kind": "view",
+        "description": "",
+        "columns": [
+          {
+            "name": "ID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "name",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "address",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "zip code",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "phone",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "city",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "country",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          },
+          {
+            "name": "SID",
+            "type": "",
+            "nullable": true,
+            "primaryKey": false,
+            "primaryKeyOrder": 0,
+            "primaryKeyPosition": null,
+            "defaultValue": null
+          }
+        ],
+        "primaryKey": [],
+        "foreignKeys": [],
+        "rowCount": 2,
+        "viewSql": "CREATE VIEW \"staff_list\" AS SELECT s.staff_id AS ID, concat(s.first_name, ' ', s.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, s.store_id AS SID FROM staff AS s JOIN address AS a ON s.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id",
+        "tableSql": null,
+        "rows": [
+          {
+            "ID": 1,
+            "name": "Mike Hillyer",
+            "address": "23 Workhaven Lane",
+            "zip code": "",
+            "phone": "14033335568",
+            "city": "Lethbridge",
+            "country": "Canada",
+            "SID": 1
+          },
+          {
+            "ID": 2,
+            "name": "Jon Stephens",
+            "address": "1411 Lillydale Drive",
+            "zip code": "",
+            "phone": "6172235589",
+            "city": "Woodridge",
+            "country": "Australia",
+            "SID": 2
+          }
+        ]
+      }
+    ]
+  },
+  "exports": [
+    {
+      "table": null,
+      "format": "sqlite",
+      "path": "artifacts/sakila.sqlite",
+      "bytes": 4915200
+    },
+    {
+      "table": null,
+      "format": "sql",
+      "path": "artifacts/sakila.sql",
+      "bytes": 4776137
+    },
+    {
+      "table": "actor",
+      "format": "json",
+      "path": "artifacts/data/actor.json",
+      "bytes": 20402
+    },
+    {
+      "table": "actor",
+      "format": "csv",
+      "path": "artifacts/data/actor.csv",
+      "bytes": 7441
+    },
+    {
+      "table": "address",
+      "format": "json",
+      "path": "artifacts/data/address.json",
+      "bytes": 147694
+    },
+    {
+      "table": "address",
+      "format": "csv",
+      "path": "artifacts/data/address.csv",
+      "bytes": 69377
+    },
+    {
+      "table": "category",
+      "format": "json",
+      "path": "artifacts/data/category.json",
+      "bytes": 1233
+    },
+    {
+      "table": "category",
+      "format": "csv",
+      "path": "artifacts/data/category.csv",
+      "bytes": 507
+    },
+    {
+      "table": "city",
+      "format": "json",
+      "path": "artifacts/data/city.json",
+      "bytes": 56104
+    },
+    {
+      "table": "city",
+      "format": "csv",
+      "path": "artifacts/data/city.csv",
+      "bytes": 21937
+    },
+    {
+      "table": "country",
+      "format": "json",
+      "path": "artifacts/data/country.json",
+      "bytes": 8937
+    },
+    {
+      "table": "country",
+      "format": "csv",
+      "path": "artifacts/data/country.csv",
+      "bytes": 3628
+    },
+    {
+      "table": "customer",
+      "format": "json",
+      "path": "artifacts/data/customer.json",
+      "bytes": 138010
+    },
+    {
+      "table": "customer",
+      "format": "csv",
+      "path": "artifacts/data/customer.csv",
+      "bytes": 59029
+    },
+    {
+      "table": "film",
+      "format": "json",
+      "path": "artifacts/data/film.json",
+      "bytes": 411531
+    },
+    {
+      "table": "film",
+      "format": "csv",
+      "path": "artifacts/data/film.csv",
+      "bytes": 193158
+    },
+    {
+      "table": "film_actor",
+      "format": "json",
+      "path": "artifacts/data/film_actor.json",
+      "bytes": 395257
+    },
+    {
+      "table": "film_actor",
+      "format": "csv",
+      "path": "artifacts/data/film_actor.csv",
+      "bytes": 149493
+    },
+    {
+      "table": "film_category",
+      "format": "json",
+      "path": "artifacts/data/film_category.json",
+      "bytes": 74319
+    },
+    {
+      "table": "film_category",
+      "format": "csv",
+      "path": "artifacts/data/film_category.csv",
+      "bytes": 26348
+    },
+    {
+      "table": "film_text",
+      "format": "json",
+      "path": "artifacts/data/film_text.json",
+      "bytes": 157973
+    },
+    {
+      "table": "film_text",
+      "format": "csv",
+      "path": "artifacts/data/film_text.csv",
+      "bytes": 113996
+    },
+    {
+      "table": "inventory",
+      "format": "json",
+      "path": "artifacts/data/inventory.json",
+      "bytes": 419861
+    },
+    {
+      "table": "inventory",
+      "format": "csv",
+      "path": "artifacts/data/inventory.csv",
+      "bytes": 140459
+    },
+    {
+      "table": "language",
+      "format": "json",
+      "path": "artifacts/data/language.json",
+      "bytes": 465
+    },
+    {
+      "table": "language",
+      "format": "csv",
+      "path": "artifacts/data/language.csv",
+      "bytes": 209
+    },
+    {
+      "table": "payment",
+      "format": "json",
+      "path": "artifacts/data/payment.json",
+      "bytes": 2654250
+    },
+    {
+      "table": "payment",
+      "format": "csv",
+      "path": "artifacts/data/payment.csv",
+      "bytes": 985745
+    },
+    {
+      "table": "rental",
+      "format": "json",
+      "path": "artifacts/data/rental.json",
+      "bytes": 3011346
+    },
+    {
+      "table": "rental",
+      "format": "csv",
+      "path": "artifacts/data/rental.csv",
+      "bytes": 1214129
+    },
+    {
+      "table": "staff",
+      "format": "json",
+      "path": "artifacts/data/staff.json",
+      "bytes": 48994
+    },
+    {
+      "table": "staff",
+      "format": "csv",
+      "path": "artifacts/data/staff.csv",
+      "bytes": 48782
+    },
+    {
+      "table": "store",
+      "format": "json",
+      "path": "artifacts/data/store.json",
+      "bytes": 191
+    },
+    {
+      "table": "store",
+      "format": "csv",
+      "path": "artifacts/data/store.csv",
+      "bytes": 101
+    }
+  ]
+}

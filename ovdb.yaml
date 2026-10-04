@@ -1,0 +1,54 @@
+{
+  "format": "ovdb-manifest/draft-1",
+  "id": "sakila",
+  "title": "Sakila",
+  "description": "MySQL's sample video rental database, with films, actors, customers, rentals, payments, and stores.",
+  "homepage": "https://sakila.demodb.dev/",
+  "url": "https://demodb.dev/sakila/",
+  "deployment": {
+    "engine": "sqlite",
+    "url": "https://cloud.openvaultdb.com/ovdb/dbs/sakila",
+    "discovery": "https://demodb.dev/.well-known/openvaultdb"
+  },
+  "model": {
+    "address": "modelspec://github.com/demo-db/sakila/sakila",
+    "modelspec": "model/sakila.modelspec.json",
+    "hcl": "model/sakila.modelspec.hcl"
+  },
+  "meaning": {
+    "file": "model/sakila.meaning.yaml",
+    "graph": {
+      "id": "sakila",
+      "address": "meaning://github.com/demo-db/sakila"
+    }
+  },
+  "publisher": {
+    "name": "DemoDB",
+    "url": "https://github.com/demo-db",
+    "repository": "https://github.com/demo-db/sakila"
+  },
+  "licences": {
+    "data": "BSD-3-Clause",
+    "model": "BSD-3-Clause",
+    "meaning": "CC0-1.0"
+  },
+  "recordsets": [
+    "actor",
+    "address",
+    "category",
+    "city",
+    "country",
+    "customer",
+    "film",
+    "film_actor",
+    "film_category",
+    "film_text",
+    "inventory",
+    "language",
+    "payment",
+    "rental",
+    "staff",
+    "store"
+  ],
+  "recordset_entities": {}
+}
