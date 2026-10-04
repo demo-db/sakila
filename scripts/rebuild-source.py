@@ -221,9 +221,36 @@ def transform_insert(statement: str) -> str:
 def rewrite_views(sql: str) -> list[tuple[str, str]]:
     sql = unversioned(sql)
     result = []
-    pattern = re.compile(r"CREATE\s+VIEW\s+`?(\w+)`?\s+AS\s+(.*?);", re.I | re.S)
+    pattern = re.compile(r"CREATE\s+(?:DEFINER\s*=\s*[^\s]+\s+SQL\s+SECURITY\s+\w+\s+)?VIEW\s+`?(\w+)`?\s+AS\s+(.*?);", re.I | re.S)
     for match in pattern.finditer(sql):
         name, body = match.groups()
+        if name == "actor_info":
+            # The upstream view uses ordered, nested GROUP_CONCAT syntax which
+            # SQLite does not implement. Preserve its output with ordered
+            # subqueries and SQLite's built-in aggregate instead.
+            body = '''
+                SELECT a.actor_id, a.first_name, a.last_name,
+                  (SELECT group_concat(category_info, '; ') FROM (
+                    SELECT c.name || ': ' ||
+                      (SELECT group_concat(title, ', ') FROM (
+                        SELECT f.title
+                        FROM film AS f
+                        JOIN film_category AS fc ON f.film_id = fc.film_id
+                        JOIN film_actor AS fa ON f.film_id = fa.film_id
+                        WHERE fc.category_id = c.category_id AND fa.actor_id = a.actor_id
+                        ORDER BY f.title
+                      )) AS category_info
+                    FROM category AS c
+                    JOIN film_category AS fc ON c.category_id = fc.category_id
+                    JOIN film_actor AS fa ON fc.film_id = fa.film_id
+                    WHERE fa.actor_id = a.actor_id
+                    GROUP BY c.category_id, c.name
+                    ORDER BY c.name
+                  )) AS film_info
+                FROM actor AS a
+            '''
+            result.append((name, " ".join(body.split())))
+            continue
         body = re.sub(r"_utf8mb4(?=')", "", body, flags=re.I)
         body = body.replace("`", '"')
         body = re.sub(r"\bIF\s*\(", "if(", body, flags=re.I)
@@ -293,11 +320,13 @@ def build_database(output: Path) -> None:
         raise ValueError(f"foreign-key violations: {fk_errors[:5]}")
     view_names = [row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name")]
     expected_views = {
-        "customer_list", "film_list", "nicer_but_slower_film_list",
+        "actor_info", "customer_list", "film_list", "nicer_but_slower_film_list",
         "staff_list", "sales_by_store", "sales_by_film_category",
     }
     if set(view_names) != expected_views:
         raise ValueError(f"source view set changed: {view_names}")
+    if db.execute("SELECT COUNT(*) FROM actor_info").fetchone()[0] != 200:
+        raise ValueError("actor_info must include every actor, including actors without films")
     for name in view_names:
         try:
             db.execute(f'SELECT * FROM "{name}" LIMIT 1').fetchall()
@@ -333,6 +362,8 @@ def build_database(output: Path) -> None:
 def sqlite_snapshot(path: Path) -> dict[str, object]:
     """Capture logical schema and all values independent of SQLite file headers."""
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    db.create_function("concat", -1, lambda *items: "".join("" if item is None else str(item) for item in items))
+    db.create_function("if", 3, lambda test, yes, no: yes if test else no)
     try:
         objects = db.execute(
             "SELECT type, name, tbl_name, sql FROM sqlite_master "

@@ -24,8 +24,8 @@
         "sourceSha256": "8c228c678cec6ea9e5145ea868f48be87982252e806a547dcddb67758cadf174"
       }
     ],
-    "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, six views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
-    "databaseSha256": "7a7889aca95e69b1be9e78fb05f5da7200d14aea94738ec34714a43e77860ef1"
+    "notes": "Derived from the official MySQL Sakila 1.5 archive (SHA-256 pinned in this manifest and scripts/rebuild-source.py). Only the two SQL source files are retained; the archive's MySQL Workbench model and documentation are excluded. The source scripts' New BSD license headers are retained. The converter preserves all 16 tables, seven views, 16,044 rentals and payments, 5,462 film-actor links, foreign keys, composite keys, indexes supported by SQLite, 603 address geometry values as raw WKB BLOBs, and the source's one non-null staff picture PNG as a BLOB; the second staff picture is NULL upstream. The upstream ins_film trigger is represented by a one-time film_text population during fixture creation; actor_info is represented with ordered subqueries because SQLite lacks MySQL's ordered GROUP_CONCAT syntax. Procedures, functions, triggers, MySQL FULLTEXT/SPATIAL indexes, collation behavior, and server-specific update behavior are not represented as SQLite features. MySQL ENUM and SET columns are represented as text without enforcing their source value lists. SQLite dates and timestamps are stored as text. The original geometry bytes are retained but are not decoded or assigned a spatial extension. SQLite file bytes can differ across SQLite library versions; logical row/schema/view checks and source-script hashes are authoritative. Generated JSON encodes BLOBs as base64; generated CSV BLOBs use base64 text, while SQL exports use SQLite syntax.",
+    "databaseSha256": "6bdb4eed96edcc540c729eb7f84a0d8a0dbe967ffbe8b286f014629bd133d177"
   },
   "blobEncoding": "base64",
   "modelingLimitations": [],
@@ -2660,6 +2660,130 @@
           "manager_staff_id": 2,
           "address_id": 2,
           "last_update": "2006-02-15 04:57:12"
+        }
+      ]
+    },
+    {
+      "name": "actor_info",
+      "modelEntity": null,
+      "modelRecordset": null,
+      "kind": "view",
+      "description": "Actor names with their film titles grouped by category, derived from the source view's ordered aggregates.",
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyOrder": 0,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "first_name",
+          "type": "",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyOrder": 0,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "last_name",
+          "type": "",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyOrder": 0,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        },
+        {
+          "name": "film_info",
+          "type": "",
+          "nullable": true,
+          "primaryKey": false,
+          "primaryKeyOrder": 0,
+          "primaryKeyPosition": null,
+          "defaultValue": null
+        }
+      ],
+      "primaryKey": [],
+      "foreignKeys": [],
+      "rowCount": 200,
+      "viewSql": "CREATE VIEW \"actor_info\" AS SELECT a.actor_id, a.first_name, a.last_name, (SELECT group_concat(category_info, '; ') FROM ( SELECT c.name || ': ' || (SELECT group_concat(title, ', ') FROM ( SELECT f.title FROM film AS f JOIN film_category AS fc ON f.film_id = fc.film_id JOIN film_actor AS fa ON f.film_id = fa.film_id WHERE fc.category_id = c.category_id AND fa.actor_id = a.actor_id ORDER BY f.title )) AS category_info FROM category AS c JOIN film_category AS fc ON c.category_id = fc.category_id JOIN film_actor AS fa ON fc.film_id = fa.film_id WHERE fa.actor_id = a.actor_id GROUP BY c.category_id, c.name ORDER BY c.name )) AS film_info FROM actor AS a",
+      "tableSql": null,
+      "rows": [
+        {
+          "actor_id": 1,
+          "first_name": "PENELOPE",
+          "last_name": "GUINESS",
+          "film_info": "Animation: ANACONDA CONFESSIONS; Children: LANGUAGE COWBOY; Classics: COLOR PHILADELPHIA, WESTWARD SEABISCUIT; Comedy: VERTIGO NORTHWEST; Documentary: ACADEMY DINOSAUR; Family: KING EVOLUTION, SPLASH GUMP; Foreign: MULHOLLAND BEAST; Games: BULWORTH COMMANDMENTS, HUMAN GRAFFITI; Horror: ELEPHANT TROJAN, LADY STAGE, RULES HUMAN; Music: WIZARD COLDBLOODED; New: ANGELS LIFE, OKLAHOMA JUMANJI; Sci-Fi: CHEAPER CLYDE; Sports: GLEAMING JAWBREAKER"
+        },
+        {
+          "actor_id": 2,
+          "first_name": "NICK",
+          "last_name": "WAHLBERG",
+          "film_info": "Action: BULL SHAWSHANK; Animation: FIGHT JAWBREAKER; Children: JERSEY SASSY; Classics: DRACULA CRYSTAL, GILBERT PELICAN; Comedy: MALLRATS UNITED, RUSHMORE MERMAID; Documentary: ADAPTATION HOLES; Drama: WARDROBE PHANTOM; Family: APACHE DIVINE, CHISUM BEHAVIOR, INDIAN LOVE, MAGUIRE APACHE; Foreign: BABY HALL, HAPPINESS UNITED; Games: ROOF CHAMPION; Music: LUCKY FLYING; New: DESTINY SATURDAY, FLASH WARS, JEKYLL FROGMEN, MASK PEACH; Sci-Fi: CHAINSAW UPTOWN, GOODFELLAS SALUTE; Travel: LIAISONS SWEET, SMILE EARRING"
+        },
+        {
+          "actor_id": 3,
+          "first_name": "ED",
+          "last_name": "CHASE",
+          "film_info": "Action: CADDYSHACK JEDI, FORREST SONS; Classics: FROST HEAD, JEEPERS WEDDING; Documentary: ARMY FLINTSTONES, FRENCH HOLIDAY, HALLOWEEN NUTS, HUNTER ALTER, WEDDING APOLLO, YOUNG LANGUAGE; Drama: LUCK OPUS, NECKLACE OUTBREAK, SPICE SORORITY; Foreign: COWBOY DOOM, WHALE BIKINI; Music: ALONE TRIP; New: EVE RESURRECTION, PLATOON INSTINCT; Sci-Fi: WEEKEND PERSONAL; Sports: ARTIST COLDBLOODED, IMAGE PRINCESS; Travel: BOONDOCK BALLROOM"
+        },
+        {
+          "actor_id": 4,
+          "first_name": "JENNIFER",
+          "last_name": "DAVIS",
+          "film_info": "Action: BAREFOOT MANCHURIAN; Animation: ANACONDA CONFESSIONS, GHOSTBUSTERS ELF; Comedy: SUBMARINE BED; Documentary: BED HIGHBALL, NATIONAL STORY, RAIDERS ANTITRUST; Drama: BLADE POLISH, GREEDY ROOTS; Family: SPLASH GUMP; Horror: TREASURE COMMAND; Music: HANOVER GALAXY, REDS POCUS; New: ANGELS LIFE, JUMANJI BLADE, OKLAHOMA JUMANJI; Sci-Fi: RANDOM GO, SILVERADO GOLDFINGER, UNFORGIVEN ZOOLANDER; Sports: INSTINCT AIRPORT, POSEIDON FOREVER; Travel: BOONDOCK BALLROOM"
+        },
+        {
+          "actor_id": 5,
+          "first_name": "JOHNNY",
+          "last_name": "LOLLOBRIGIDA",
+          "film_info": "Action: AMADEUS HOLY, GRAIL FRANKENSTEIN, RINGS HEARTBREAKERS; Animation: SUNRISE LEAGUE; Children: HALL CASSIDY; Comedy: DADDY PITTSBURGH; Documentary: BONNIE HOLOCAUST, METAL ARMAGEDDON, PACIFIC AMISTAD, POCUS PULP; Drama: CHITTY LOCK, CONEHEADS SMOOCHY; Games: FIRE WOLVES; Horror: COMMANDMENTS EXPRESS, LOVE SUICIDES, PATTON INTERVIEW; Music: BANGER PINOCCHIO, HEAVENLY GUN; New: FRONTIER CABIN, RIDGEMONT SUBMARINE; Sci-Fi: DAISY MENAGERIE, GOODFELLAS SALUTE, SOLDIERS EVOLUTION; Sports: GROOVE FICTION, KRAMER CHOCOLATE, STAR OPERATION; Travel: ENOUGH RAGING, ESCAPE METROPOLIS, SMILE EARRING"
+        },
+        {
+          "actor_id": 6,
+          "first_name": "BETTE",
+          "last_name": "NICHOLSON",
+          "film_info": "Action: ANTITRUST TOMATOES; Animation: BIKINI BORROWERS, CROSSROADS CASUALTIES, POTLUCK MIXED, TITANIC BOONDOCK; Children: LANGUAGE COWBOY; Classics: BEAST HUNCHBACK; Documentary: COAST RAINBOW; Family: BANG KWAI; Foreign: CALENDAR GUNFIGHT, MULHOLLAND BEAST; New: WYOMING STORM; Sci-Fi: COLDBLOODED DARLING; Sports: DROP WATERFRONT, KRAMER CHOCOLATE, LESSON CLEOPATRA, LIBERTY MAGNIFICENT, TRADING PINOCCHIO; Travel: IGBY MAKER, SPEED SUIT"
+        },
+        {
+          "actor_id": 7,
+          "first_name": "GRACE",
+          "last_name": "MOSTEL",
+          "film_info": "Action: BERETS AGENT, EXCITEMENT EVE; Animation: SLEEPLESS MONSOON, TRACY CIDER; Children: WARLOCK WEREWOLF; Classics: MALKOVICH PET, OCTOBER SUBMARINE; Drama: CONFESSIONS MAGUIRE, DECEIVER BETRAYED, DESTINATION JERK, NECKLACE OUTBREAK, SAINTS BRIDE, SAVANNAH TOWN, TREATMENT JEKYLL; Foreign: COMMAND DARLING, HELLFIGHTERS SIERRA, SCISSORHANDS SLUMS, TOWN ARK, WAR NOTTING; Games: DAZED PUNK; Horror: ARACHNOPHOBIA ROLLERCOASTER, GASLIGHT CRUSADE; New: ANGELS LIFE, BREAKING HOME, SLEEPY JAPANESE, STING PERSONAL; Sci-Fi: OPEN AFRICAN; Sports: ANONYMOUS HUMAN, INSTINCT AIRPORT, POSEIDON FOREVER"
+        },
+        {
+          "actor_id": 8,
+          "first_name": "MATTHEW",
+          "last_name": "JOHANSSON",
+          "film_info": "Action: CAMPUS REMEMBER, DANCES NONE; Animation: SUGAR WONKA; Classics: LIGHTS DEER, MALKOVICH PET, TOMORROW HUSTLER; Drama: CONQUERER NUTS, HANGING DEEP, SCORPION APOLLO; Family: INDIAN LOVE; Foreign: BABY HALL, SCHOOL JACKET; Music: CLONES PINOCCHIO, DRIVING POLISH, RUNNER MADIGAN, VANISHING ROCKY; New: FLASH WARS; Sci-Fi: CROWDS TELEMARK; Sports: DURHAM PANKY, LOSER HUSTLER"
+        },
+        {
+          "actor_id": 9,
+          "first_name": "JOE",
+          "last_name": "SWANK",
+          "film_info": "Action: PRIMARY GLASS, WATERFRONT DELIVERANCE; Animation: LAWLESS VISION, SUNRISE LEAGUE; Children: CROOKED FROGMEN, SWEETHEARTS SUSPECTS, TIES HUNGER; Classics: SNATCHERS MONTEZUMA; Documentary: MAJESTIC FLOATS, PACIFIC AMISTAD, UNTOUCHABLES SUNRISE; Drama: DALMATIONS SWEDEN, LEBOWSKI SOLDIERS; Family: CHOCOLAT HARRY; Foreign: CHOCOLATE DUCK; Games: CURTAIN VIDEOTAPE; Horror: ANYTHING SAVANNAH, REEF SALUTE; Music: BIRCH ANTITRUST, RUNNER MADIGAN; New: WILD APOLLO; Sports: PERDITION FARGO; Travel: HORROR REIGN, SMILE EARRING, TRAFFIC HOBBIT"
+        },
+        {
+          "actor_id": 10,
+          "first_name": "CHRISTIAN",
+          "last_name": "GABLE",
+          "film_info": "Action: LORD ARIZONA, WATERFRONT DELIVERANCE; Animation: PUNK DIVORCE; Children: CROOKED FROGMEN; Classics: JEEPERS WEDDING, PREJUDICE OLEANDER; Comedy: LIFE TWISTED; Documentary: ACADEMY DINOSAUR, MOD SECRETARY, WEDDING APOLLO; Drama: GOLDFINGER SENSIBILITY; Foreign: USUAL UNTOUCHABLES; Games: DIVINE RESURRECTION; Horror: ALABAMA DEVIL, REAP UNFAITHFUL; Music: JAWBREAKER BROOKLYN, WIZARD COLDBLOODED, WON DARES; New: DRAGONFLY STRANGERS; Sci-Fi: VACATION BOONDOCK; Sports: SHAKESPEARE SADDLE; Travel: TROUBLE DATE"
+        },
+        {
+          "actor_id": 11,
+          "first_name": "ZERO",
+          "last_name": "CAGE",
+          "film_info": "Action: DANCES NONE, HANDICAP BOONDOCK, STORY SIDE; Animation: CANYON STOCK, HORN WORKING; Children: JERSEY SASSY, TOOTSIE PILOT, UPTOWN YOUNG; Comedy: VELVET TERMINATOR; Documentary: MOD SECRETARY, THIN SAGEBRUSH; Drama: RACER EGG, WEST LION; Family: GANDHI KWAI; Foreign: MEET CHOCOLATE; Games: ENCINO ELF, MOONWALKER FOOL; Horror: STRANGERS GRAFFITI; Music: OLEANDER CLUE; New: ENDING CROWDS, GODFATHER DIARY; Sports: HONEY TIES, IMAGE PRINCESS, LOSER HUSTLER; Travel: WORKER TARZAN"
+        },
+        {
+          "actor_id": 12,
+          "first_name": "KARL",
+          "last_name": "BERRY",
+          "film_info": "Action: STAGECOACH ARMAGEDDON; Animation: DARES PLUTO, DOORS PRESIDENT, TELEMARK HEARTBREAKERS; Children: FURY MURDER; Classics: ARIZONA BANG, BOUND CHEAPER; Comedy: PERFECT GROOVE, SWEDEN SHINING; Documentary: HARDLY ROBBERS, INDEPENDENCE HOTEL, SMOKING BARBARELLA, VIRGINIAN PLUTO; Drama: BUNCH MINDS, REUNION WITCHES; Family: DATE SPEED; Foreign: ALLEY EVOLUTION, HIGHBALL POTTER; Horror: ARABIA DOGMA, BOWFINGER GABLES, MONTEREY LABYRINTH, REAP UNFAITHFUL; Music: ALONE TRIP, LUCKY FLYING; New: CLEOPATRA DEVIL, DAY UNFAITHFUL, OKLAHOMA JUMANJI; Sci-Fi: CONNECTICUT TRAMP; Sports: HOLES BRANNIGAN, NOVOCAINE FLIGHT; Travel: LEATHERNECKS DWARFS"
         }
       ]
     },

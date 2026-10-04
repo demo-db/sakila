@@ -14,7 +14,9 @@ MySQL sample license covers the schema and data SQL files only. The fixture
 builder expands the source's versioned geometry clauses, imports every source
 row, and retains raw address WKB and staff-picture PNG bytes as SQLite BLOBs.
 It populates `film_text` as the upstream `ins_film` trigger does during a fresh
-installation. All six source views are translated to executable SQLite views.
+installation. All seven source views are translated to executable SQLite views;
+`actor_info` uses ordered subqueries because SQLite lacks MySQL's ordered
+`GROUP_CONCAT` syntax.
 
 The SQLite fixture does not emulate MySQL stored procedures, functions,
 triggers after import, FULLTEXT or SPATIAL indexes, collation rules, ENUM/SET
