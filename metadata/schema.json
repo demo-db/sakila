@@ -80,6 +80,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [],
       "rowCount": 200,
       "viewSql": null,
@@ -255,6 +257,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "city_id",
@@ -446,6 +450,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [],
       "rowCount": 16,
       "viewSql": null,
@@ -563,6 +569,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "country_id",
@@ -694,6 +702,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [],
       "rowCount": 109,
       "viewSql": null,
@@ -856,6 +866,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "store_id",
@@ -1149,6 +1161,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "original_language_id",
@@ -1402,6 +1416,31 @@
           "position": 2
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [
+        {
+          "name": "sqlite_autoindex_film_actor_1",
+          "origin": "pk",
+          "partial": false,
+          "columns": [
+            {
+              "position": 0,
+              "column": "actor_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            },
+            {
+              "position": 1,
+              "column": "film_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            }
+          ],
+          "sql": null
+        }
+      ],
       "foreignKeys": [
         {
           "column": "film_id",
@@ -1535,6 +1574,31 @@
           "position": 2
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [
+        {
+          "name": "sqlite_autoindex_film_category_1",
+          "origin": "pk",
+          "partial": false,
+          "columns": [
+            {
+              "position": 0,
+              "column": "film_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            },
+            {
+              "position": 1,
+              "column": "category_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            }
+          ],
+          "sql": null
+        }
+      ],
       "foreignKeys": [
         {
           "column": "category_id",
@@ -1664,6 +1728,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [],
       "rowCount": 1000,
       "viewSql": null,
@@ -1781,6 +1847,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "film_id",
@@ -1922,6 +1990,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [],
       "rowCount": 6,
       "viewSql": null,
@@ -2036,6 +2106,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "staff_id",
@@ -2257,6 +2329,48 @@
         {
           "column": "rental_id",
           "position": 1
+        }
+      ],
+      "uniqueKeys": [
+        {
+          "name": "uq_rental_14",
+          "origin": "c",
+          "columns": [
+            "rental_date",
+            "inventory_id",
+            "customer_id"
+          ]
+        }
+      ],
+      "uniqueIndexes": [
+        {
+          "name": "uq_rental_14",
+          "origin": "c",
+          "partial": false,
+          "columns": [
+            {
+              "position": 0,
+              "column": "rental_date",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            },
+            {
+              "position": 1,
+              "column": "inventory_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            },
+            {
+              "position": 2,
+              "column": "customer_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"uq_rental_14\" ON \"rental\" (\"rental_date\", \"inventory_id\", \"customer_id\")"
         }
       ],
       "foreignKeys": [
@@ -2519,6 +2633,8 @@
           "position": 1
         }
       ],
+      "uniqueKeys": [],
+      "uniqueIndexes": [],
       "foreignKeys": [
         {
           "column": "address_id",
@@ -2621,6 +2737,32 @@
         {
           "column": "store_id",
           "position": 1
+        }
+      ],
+      "uniqueKeys": [
+        {
+          "name": "store_idx_unique_manager",
+          "origin": "c",
+          "columns": [
+            "manager_staff_id"
+          ]
+        }
+      ],
+      "uniqueIndexes": [
+        {
+          "name": "store_idx_unique_manager",
+          "origin": "c",
+          "partial": false,
+          "columns": [
+            {
+              "position": 0,
+              "column": "manager_staff_id",
+              "expression": false,
+              "descending": false,
+              "collation": "BINARY"
+            }
+          ],
+          "sql": "CREATE UNIQUE INDEX \"store_idx_unique_manager\" ON \"store\" (\"manager_staff_id\")"
         }
       ],
       "foreignKeys": [
@@ -3675,5 +3817,6 @@
         }
       ]
     }
-  ]
+  ],
+  "sourceViews": []
 }

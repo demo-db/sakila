@@ -138,24 +138,24 @@
       "bytes": 4915200
     },
     "manifest.json": {
-      "sha256": "b408335abaaaaa34f87b27172223bf1a27af985659663a32587f1e211dec5590",
-      "bytes": 10640
+      "sha256": "bf8d4145d14a36b5de49f4b9e0756e6265f8d2d23b10ab851c7f95b526658778",
+      "bytes": 10674
     },
     "metadata/contract.json": {
-      "sha256": "89c9c181ed41746c5a26ec14b489f9b295040a450c13667c134db483bc65cbce",
-      "bytes": 191960
+      "sha256": "f123ebfb9820a473245b7cac38c07c2121469390f80318d9df06c8be51b57210",
+      "bytes": 196022
     },
     "metadata/schema.json": {
-      "sha256": "5aa51eec34cbb5a4314be97b2477c9821189c89d4159f98de22bf641b170ea91",
-      "bytes": 168997
+      "sha256": "ae88a287c9da87544b235678fe04ecfd6edc59be498c1446eac95fa7ecc533aa",
+      "bytes": 172737
     },
     "model/sakila.meaning.yaml": {
       "sha256": "8d005600fef94f41ea007fb58cf259e3f30060b4cc88b4df614dc74a3e896499",
       "bytes": 2755
     },
     "model/sakila.modelspec.hcl": {
-      "sha256": "b9172e238ad911fb27004d5143dc2ccce82fc16bcb4c59bc40df475c6bdc36b7",
-      "bytes": 6603
+      "sha256": "d57906e385f79d52ca4cc0ee370267bb6ef5cb5f78244503718171bc398313e4",
+      "bytes": 6643
     },
     "model/sakila.modelspec.json": {
       "sha256": "e60c2b1f4cfd490ce97939b1703b741d48758472170f3b54aedf6d7f4865b336",
