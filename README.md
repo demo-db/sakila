@@ -22,5 +22,5 @@ python3 scripts/rebuild-source.py --check
 Provider exports, ModelSpec, MeaningGraph, the OVDB descriptor, and checksum
 records are generated from `manifest.json` and `data-source/source.sqlite` by
 the immutable shared generator used in CI. Run the generator and validation
-workflow before changing generated files. OVDB deployment is disabled until a
-read-only backend mount has been separately verified.
+workflow before changing generated files. The verified read-only OVDB mount provides record lookups and query access;
+writes remain disabled.

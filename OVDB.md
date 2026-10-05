@@ -13,5 +13,5 @@ typed public database descriptor. The canonical database identity is
 `https://demodb.dev/ovdb/db/sakila/ovdb-database.json`.
 
 The SQLite fixture and static exports are published by the DemoDB site. OVDB
-read and query access remain disabled in provider metadata until the backend
-mount has been verified.
+read and query access are available through the verified read-only mount; write
+access remains disabled.
