@@ -1,0 +1,11 @@
+record_file:
+  name: records.json
+  format: json
+  type: "map[$record_id]map[$field_name]any"
+columns:
+  "film_id":
+    type: any
+  "category_id":
+    type: any
+  "last_update":
+    type: any

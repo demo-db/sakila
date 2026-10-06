@@ -1,0 +1,983 @@
+{
+  "format": "demodb-ingitdb-export/v1",
+  "datasetId": "sakila",
+  "source": {
+    "repository": "https://downloads.mysql.com/docs/sakila-db.zip",
+    "revision": "sha256:ef4ab9aab7a433311eff6558561bf47de231fe9f6d49f03de67e593418df719c",
+    "providerRepository": "https://github.com/demo-db/sakila",
+    "providerCommit": "cb9a81a8cbedcd8831737f281f888d5d584fae85",
+    "providerContractSha256": "54b74e47ad29e4c1d68866e89add885ee833728f04c4d68c46c2486346882655",
+    "fixtureSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454",
+    "fixtureBytes": 4915200
+  },
+  "rowCount": 47268,
+  "tables": [
+    {
+      "nativeName": "actor",
+      "collection": "actor_50c9c4ae",
+      "rows": 200,
+      "primaryKey": [
+        "actor_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [],
+      "columns": [
+        {
+          "nativeName": "actor_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "first_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "actor_50c9c4ae/records.json",
+        "sha256": "507edb806394ccf913f1edf9452bcf3b31cd4b082b87be0a36829e7b23e6ed93"
+      }
+    },
+    {
+      "nativeName": "address",
+      "collection": "address_d80c9bf9",
+      "rows": 603,
+      "primaryKey": [
+        "address_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "city",
+          "from": "city_id",
+          "to": "city_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "address_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "address",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "address2",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "district",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "city_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "postal_code",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "phone",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "location",
+          "declaredType": "BLOB",
+          "encoding": "base64"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "address_d80c9bf9/records.json",
+        "sha256": "818d2a853b7b8b98dbb21f9c77b1c0d1d27dc02ebfc168a6e6536c8193aa16ac"
+      }
+    },
+    {
+      "nativeName": "category",
+      "collection": "category_edb2cd3b",
+      "rows": 16,
+      "primaryKey": [
+        "category_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [],
+      "columns": [
+        {
+          "nativeName": "category_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "category_edb2cd3b/records.json",
+        "sha256": "7110f1f96d18e66f58fbe63b22a27b285a30b402f7f1d45e095b8c67fa28a5c0"
+      }
+    },
+    {
+      "nativeName": "city",
+      "collection": "city_11a62c23",
+      "rows": 600,
+      "primaryKey": [
+        "city_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "country",
+          "from": "country_id",
+          "to": "country_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "city_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "city",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "country_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "city_11a62c23/records.json",
+        "sha256": "7741f79c160759069923a4dba2311fd40d8671e43625de090d4377dfc4178d4b"
+      }
+    },
+    {
+      "nativeName": "country",
+      "collection": "country_aff64e4f",
+      "rows": 109,
+      "primaryKey": [
+        "country_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [],
+      "columns": [
+        {
+          "nativeName": "country_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "country",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "country_aff64e4f/records.json",
+        "sha256": "93523b4b5f8fa7410fbd4cb6f4ed542db7471b8221345c1f10085f81b22a1a20"
+      }
+    },
+    {
+      "nativeName": "customer",
+      "collection": "customer_b6c45863",
+      "rows": 599,
+      "primaryKey": [
+        "customer_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "store",
+          "from": "store_id",
+          "to": "store_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "address",
+          "from": "address_id",
+          "to": "address_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "customer_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "store_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "first_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "email",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "address_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "active",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "create_date",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "customer_b6c45863/records.json",
+        "sha256": "b6d168bccfb1f0c378ea43d73262022a08d9e33733e9960d18e9f2ee3d209713"
+      }
+    },
+    {
+      "nativeName": "film",
+      "collection": "film_d0607f7a",
+      "rows": 1000,
+      "primaryKey": [
+        "film_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "language",
+          "from": "original_language_id",
+          "to": "language_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "language",
+          "from": "language_id",
+          "to": "language_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "film_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "title",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "description",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "release_year",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "language_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "original_language_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "rental_duration",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "rental_rate",
+          "declaredType": "NUMERIC",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "length",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "replacement_cost",
+          "declaredType": "NUMERIC",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "rating",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "special_features",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "film_d0607f7a/records.json",
+        "sha256": "a57fb2c018a684feaaa4e2d9b762bf37c38034a0e050b89bf32cae8a8d7b088c"
+      }
+    },
+    {
+      "nativeName": "film_actor",
+      "collection": "film_actor_fa9a5723",
+      "rows": 5462,
+      "primaryKey": [
+        "actor_id",
+        "film_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "film",
+          "from": "film_id",
+          "to": "film_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "actor",
+          "from": "actor_id",
+          "to": "actor_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "actor_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "film_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "film_actor_fa9a5723/records.json",
+        "sha256": "b60282da77ada3beef3b90e0279bb07084f27c806fd5d99a971fcec0dadc8038"
+      }
+    },
+    {
+      "nativeName": "film_category",
+      "collection": "film_category_4ef0043d",
+      "rows": 1000,
+      "primaryKey": [
+        "film_id",
+        "category_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "category",
+          "from": "category_id",
+          "to": "category_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "film",
+          "from": "film_id",
+          "to": "film_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "film_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "category_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "film_category_4ef0043d/records.json",
+        "sha256": "87e96bbc55af8c963dc339421ce3d6a986615af77b9b27e7c31d892220c6f957"
+      }
+    },
+    {
+      "nativeName": "film_text",
+      "collection": "film_text_4d8ac079",
+      "rows": 1000,
+      "primaryKey": [
+        "film_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [],
+      "columns": [
+        {
+          "nativeName": "film_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "title",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "description",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "film_text_4d8ac079/records.json",
+        "sha256": "01d026e1a0ea3857f09e511e2908529f6f32d98f4b01a4497851e6a14bf065d1"
+      }
+    },
+    {
+      "nativeName": "inventory",
+      "collection": "inventory_b11a85b2",
+      "rows": 4581,
+      "primaryKey": [
+        "inventory_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "film",
+          "from": "film_id",
+          "to": "film_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "store",
+          "from": "store_id",
+          "to": "store_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "inventory_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "film_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "store_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "inventory_b11a85b2/records.json",
+        "sha256": "4dace5de6e3c5c1f27281389f7ae6c9762df8a7a4e2a7017cff26c88e82288b9"
+      }
+    },
+    {
+      "nativeName": "language",
+      "collection": "language_a4ef304b",
+      "rows": 6,
+      "primaryKey": [
+        "language_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [],
+      "columns": [
+        {
+          "nativeName": "language_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "language_a4ef304b/records.json",
+        "sha256": "8fac11f864c44032e3c84384781f6713fd280375eeb562654b11ec64ded58827"
+      }
+    },
+    {
+      "nativeName": "payment",
+      "collection": "payment_040ffd59",
+      "rows": 16044,
+      "primaryKey": [
+        "payment_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "staff",
+          "from": "staff_id",
+          "to": "staff_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "customer",
+          "from": "customer_id",
+          "to": "customer_id"
+        },
+        {
+          "id": 2,
+          "sequence": 0,
+          "table": "rental",
+          "from": "rental_id",
+          "to": "rental_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "payment_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "customer_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "staff_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "rental_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "amount",
+          "declaredType": "NUMERIC",
+          "encoding": "sqlite-typed-json"
+        },
+        {
+          "nativeName": "payment_date",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "payment_040ffd59/records.json",
+        "sha256": "9675ac503867d3171f27f7b75ce99ee5c15c6838100e21dd6b0e61feac94197f"
+      }
+    },
+    {
+      "nativeName": "rental",
+      "collection": "rental_e0c146e3",
+      "rows": 16044,
+      "primaryKey": [
+        "rental_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "customer",
+          "from": "customer_id",
+          "to": "customer_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "inventory",
+          "from": "inventory_id",
+          "to": "inventory_id"
+        },
+        {
+          "id": 2,
+          "sequence": 0,
+          "table": "staff",
+          "from": "staff_id",
+          "to": "staff_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "rental_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "rental_date",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "inventory_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "customer_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "return_date",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "staff_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "rental_e0c146e3/records.json",
+        "sha256": "575a98140ea460b6046657c8eb18ff413ed917e7f451111b7f5d1e5719226c0e"
+      }
+    },
+    {
+      "nativeName": "staff",
+      "collection": "staff_15622065",
+      "rows": 2,
+      "primaryKey": [
+        "staff_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "address",
+          "from": "address_id",
+          "to": "address_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "store",
+          "from": "store_id",
+          "to": "store_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "staff_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "first_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_name",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "address_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "picture",
+          "declaredType": "BLOB",
+          "encoding": "base64"
+        },
+        {
+          "nativeName": "email",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "store_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "active",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "username",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "password",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "staff_15622065/records.json",
+        "sha256": "b80c9c297d406502b2d49e5dc60908f7f80bb04dc19d802c8a27ba947f737f3e"
+      }
+    },
+    {
+      "nativeName": "store",
+      "collection": "store_824d80d7",
+      "rows": 2,
+      "primaryKey": [
+        "store_id"
+      ],
+      "transportId": "encoded-native-primary-key",
+      "foreignKeys": [
+        {
+          "id": 0,
+          "sequence": 0,
+          "table": "address",
+          "from": "address_id",
+          "to": "address_id"
+        },
+        {
+          "id": 1,
+          "sequence": 0,
+          "table": "staff",
+          "from": "manager_staff_id",
+          "to": "staff_id"
+        }
+      ],
+      "columns": [
+        {
+          "nativeName": "store_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "manager_staff_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "address_id",
+          "declaredType": "INTEGER",
+          "encoding": "native-json"
+        },
+        {
+          "nativeName": "last_update",
+          "declaredType": "TEXT",
+          "encoding": "native-json"
+        }
+      ],
+      "records": {
+        "path": "store_824d80d7/records.json",
+        "sha256": "74e5bc708ddf4292c5124ea1912cd5a87c55d1e78887457edee8f6d09373232f"
+      }
+    }
+  ],
+  "views": [
+    {
+      "name": "actor_info",
+      "status": "source-definition-only",
+      "columns": [
+        "actor_id",
+        "first_name",
+        "last_name",
+        "film_info"
+      ],
+      "sourceSql": "CREATE VIEW \"actor_info\" AS SELECT a.actor_id, a.first_name, a.last_name, (SELECT group_concat(category_info, '; ') FROM ( SELECT c.name || ': ' || (SELECT group_concat(title, ', ') FROM ( SELECT f.title FROM film AS f JOIN film_category AS fc ON f.film_id = fc.film_id JOIN film_actor AS fa ON f.film_id = fa.film_id WHERE fc.category_id = c.category_id AND fa.actor_id = a.actor_id ORDER BY f.title )) AS category_info FROM category AS c JOIN film_category AS fc ON c.category_id = fc.category_id JOIN film_actor AS fa ON fc.film_id = fa.film_id WHERE fa.actor_id = a.actor_id GROUP BY c.category_id, c.name ORDER BY c.name )) AS film_info FROM actor AS a"
+    },
+    {
+      "name": "customer_list",
+      "status": "source-definition-only",
+      "columns": [
+        "ID",
+        "name",
+        "address",
+        "zip code",
+        "phone",
+        "city",
+        "country",
+        "notes",
+        "SID"
+      ],
+      "sourceSql": "CREATE VIEW \"customer_list\" AS SELECT cu.customer_id AS ID, (cu.first_name || ' ' || cu.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, CASE WHEN cu.active THEN 'active' ELSE '' END AS notes, cu.store_id AS SID FROM customer AS cu JOIN address AS a ON cu.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id"
+    },
+    {
+      "name": "film_list",
+      "status": "source-definition-only",
+      "columns": [
+        "FID",
+        "title",
+        "description",
+        "category",
+        "price",
+        "length",
+        "rating",
+        "actors"
+      ],
+      "sourceSql": "CREATE VIEW \"film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat((actor.first_name || ' ' || actor.last_name), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name"
+    },
+    {
+      "name": "nicer_but_slower_film_list",
+      "status": "source-definition-only",
+      "columns": [
+        "FID",
+        "title",
+        "description",
+        "category",
+        "price",
+        "length",
+        "rating",
+        "actors"
+      ],
+      "sourceSql": "CREATE VIEW \"nicer_but_slower_film_list\" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(((upper(SUBSTR(actor.first_name,1,1)) || lower(SUBSTR(actor.first_name,2,LENGTH(actor.first_name))) || ' ' || (upper(SUBSTR(actor.last_name,1,1)) || lower(SUBSTR(actor.last_name,2,LENGTH(actor.last_name)))))), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name"
+    },
+    {
+      "name": "sales_by_film_category",
+      "status": "source-definition-only",
+      "columns": [
+        "category",
+        "total_sales"
+      ],
+      "sourceSql": "CREATE VIEW \"sales_by_film_category\" AS SELECT c.name AS category , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN film AS f ON i.film_id = f.film_id INNER JOIN film_category AS fc ON f.film_id = fc.film_id INNER JOIN category AS c ON fc.category_id = c.category_id GROUP BY c.name ORDER BY total_sales DESC"
+    },
+    {
+      "name": "sales_by_store",
+      "status": "source-definition-only",
+      "columns": [
+        "store",
+        "manager",
+        "total_sales"
+      ],
+      "sourceSql": "CREATE VIEW \"sales_by_store\" AS SELECT (c.city || ',' || cy.country) AS store , (m.first_name || ' ' || m.last_name) AS manager , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN store AS s ON i.store_id = s.store_id INNER JOIN address AS a ON s.address_id = a.address_id INNER JOIN city AS c ON a.city_id = c.city_id INNER JOIN country AS cy ON c.country_id = cy.country_id INNER JOIN staff AS m ON s.manager_staff_id = m.staff_id GROUP BY s.store_id ORDER BY cy.country, c.city"
+    },
+    {
+      "name": "staff_list",
+      "status": "source-definition-only",
+      "columns": [
+        "ID",
+        "name",
+        "address",
+        "zip code",
+        "phone",
+        "city",
+        "country",
+        "SID"
+      ],
+      "sourceSql": "CREATE VIEW \"staff_list\" AS SELECT s.staff_id AS ID, (s.first_name || ' ' || s.last_name) AS name, a.address AS address, a.postal_code AS \"zip code\", a.phone AS phone, city.city AS city, country.country AS country, s.store_id AS SID FROM staff AS s JOIN address AS a ON s.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id"
+    }
+  ],
+  "status": "prepared-not-hosted"
+}

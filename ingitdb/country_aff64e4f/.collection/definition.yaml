@@ -1,0 +1,11 @@
+record_file:
+  name: records.json
+  format: json
+  type: "map[$record_id]map[$field_name]any"
+columns:
+  "country_id":
+    type: any
+  "country":
+    type: any
+  "last_update":
+    type: any
