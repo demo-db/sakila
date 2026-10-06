@@ -1,0 +1,70 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    store_id:
+        type: int
+        required: true
+    manager_staff_id:
+        type: int
+        required: true
+    address_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - store_id
+    - manager_staff_id
+    - address_id
+    - last_update
+primary_key:
+    - store_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"store\" (store_id INTEGER PRIMARY KEY AUTOINCREMENT, manager_staff_id INTEGER NOT NULL, address_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (manager_staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"store_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"manager_staff_id","declaredType":"INTEGER","notNull":true},{"name":"address_id","declaredType":"INTEGER","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"store_idx_fk_address_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"store_idx_fk_address_id\" ON \"store\" (\"address_id\")","columns":[{"position":0,"name":"address_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"store_idx_unique_manager","unique":true,"origin":"c","createSql":"CREATE UNIQUE INDEX \"store_idx_unique_manager\" ON \"store\" (\"manager_staff_id\")","columns":[{"position":0,"name":"manager_staff_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: store_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: manager_staff_id
+          type: int
+          nullable: false
+        - name: address_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: store_idx_fk_address_id
+          fields:
+            - address_id
+        - name: store_idx_unique_manager
+          fields:
+            - manager_staff_id
+          unique: true
+    foreign_keys:
+        - name: store_fk_0
+          fields:
+            - address_id
+          referenced_collection: address
+          referenced_fields:
+            - address_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: store_fk_1
+          fields:
+            - manager_staff_id
+          referenced_collection: staff
+          referenced_fields:
+            - staff_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

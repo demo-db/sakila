@@ -1,0 +1,105 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    customer_id:
+        type: int
+        required: true
+    store_id:
+        type: int
+        required: true
+    first_name:
+        type: string
+        required: true
+    last_name:
+        type: string
+        required: true
+    email:
+        type: string
+    address_id:
+        type: int
+        required: true
+    active:
+        type: int
+        required: true
+    create_date:
+        type: string
+        required: true
+    last_update:
+        type: string
+columns_order:
+    - customer_id
+    - store_id
+    - first_name
+    - last_name
+    - email
+    - address_id
+    - active
+    - create_date
+    - last_update
+primary_key:
+    - customer_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"customer\" (customer_id INTEGER PRIMARY KEY AUTOINCREMENT, store_id INTEGER NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT DEFAULT NULL, address_id INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1, create_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"customer_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"store_id","declaredType":"INTEGER","notNull":true},{"name":"first_name","declaredType":"TEXT","notNull":true},{"name":"last_name","declaredType":"TEXT","notNull":true},{"name":"email","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"address_id","declaredType":"INTEGER","notNull":true},{"name":"active","declaredType":"INTEGER","notNull":true,"defaultSql":"1"},{"name":"create_date","declaredType":"TEXT","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":false,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"customer_idx_last_name","unique":false,"origin":"c","createSql":"CREATE INDEX \"customer_idx_last_name\" ON \"customer\" (\"last_name\")","columns":[{"position":0,"name":"last_name","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"customer_idx_fk_address_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"customer_idx_fk_address_id\" ON \"customer\" (\"address_id\")","columns":[{"position":0,"name":"address_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"customer_idx_fk_store_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"customer_idx_fk_store_id\" ON \"customer\" (\"store_id\")","columns":[{"position":0,"name":"store_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: customer_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: store_id
+          type: int
+          nullable: false
+        - name: first_name
+          type: string
+          nullable: false
+        - name: last_name
+          type: string
+          nullable: false
+        - name: email
+          type: string
+          nullable: true
+        - name: address_id
+          type: int
+          nullable: false
+        - name: active
+          type: int
+          nullable: false
+        - name: create_date
+          type: string
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: true
+    indexes:
+        - name: customer_idx_last_name
+          fields:
+            - last_name
+        - name: customer_idx_fk_address_id
+          fields:
+            - address_id
+        - name: customer_idx_fk_store_id
+          fields:
+            - store_id
+    foreign_keys:
+        - name: customer_fk_0
+          fields:
+            - store_id
+          referenced_collection: store
+          referenced_fields:
+            - store_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: customer_fk_1
+          fields:
+            - address_id
+          referenced_collection: address
+          referenced_fields:
+            - address_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

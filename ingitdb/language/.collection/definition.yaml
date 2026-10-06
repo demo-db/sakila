@@ -1,0 +1,36 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    language_id:
+        type: int
+        required: true
+    name:
+        type: string
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - language_id
+    - name
+    - last_update
+primary_key:
+    - language_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"language\" (language_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)","columns":[{"name":"language_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"name","declaredType":"TEXT","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: language_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: name
+          type: string
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false

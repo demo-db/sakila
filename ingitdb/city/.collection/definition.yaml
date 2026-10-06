@@ -1,0 +1,57 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    city_id:
+        type: int
+        required: true
+    city:
+        type: string
+        required: true
+    country_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - city_id
+    - city
+    - country_id
+    - last_update
+primary_key:
+    - city_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"city\" (city_id INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT NOT NULL, country_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (country_id) REFERENCES \"country\" (country_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"city_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"city","declaredType":"TEXT","notNull":true},{"name":"country_id","declaredType":"INTEGER","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"city_idx_fk_country_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"city_idx_fk_country_id\" ON \"city\" (\"country_id\")","columns":[{"position":0,"name":"country_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: city_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: city
+          type: string
+          nullable: false
+        - name: country_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: city_idx_fk_country_id
+          fields:
+            - country_id
+    foreign_keys:
+        - name: city_fk_0
+          fields:
+            - country_id
+          referenced_collection: country
+          referenced_fields:
+            - country_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

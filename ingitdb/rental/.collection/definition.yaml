@@ -1,0 +1,107 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    rental_id:
+        type: int
+        required: true
+    rental_date:
+        type: string
+        required: true
+    inventory_id:
+        type: int
+        required: true
+    customer_id:
+        type: int
+        required: true
+    return_date:
+        type: string
+    staff_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - rental_id
+    - rental_date
+    - inventory_id
+    - customer_id
+    - return_date
+    - staff_id
+    - last_update
+primary_key:
+    - rental_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"rental\" (rental_id INTEGER PRIMARY KEY AUTOINCREMENT, rental_date TEXT NOT NULL, inventory_id INTEGER NOT NULL, customer_id INTEGER NOT NULL, return_date TEXT DEFAULT NULL, staff_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (inventory_id) REFERENCES \"inventory\" (inventory_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"rental_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"rental_date","declaredType":"TEXT","notNull":true},{"name":"inventory_id","declaredType":"INTEGER","notNull":true},{"name":"customer_id","declaredType":"INTEGER","notNull":true},{"name":"return_date","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"staff_id","declaredType":"INTEGER","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"rental_idx_fk_staff_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"rental_idx_fk_staff_id\" ON \"rental\" (\"staff_id\")","columns":[{"position":0,"name":"staff_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"rental_idx_fk_customer_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"rental_idx_fk_customer_id\" ON \"rental\" (\"customer_id\")","columns":[{"position":0,"name":"customer_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"rental_idx_fk_inventory_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"rental_idx_fk_inventory_id\" ON \"rental\" (\"inventory_id\")","columns":[{"position":0,"name":"inventory_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"uq_rental_14","unique":true,"origin":"c","createSql":"CREATE UNIQUE INDEX \"uq_rental_14\" ON \"rental\" (\"rental_date\", \"inventory_id\", \"customer_id\")","columns":[{"position":0,"name":"rental_date","key":true,"collation":"BINARY"},{"position":1,"name":"inventory_id","key":true,"collation":"BINARY"},{"position":2,"name":"customer_id","key":true,"collation":"BINARY"},{"position":3,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: rental_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: rental_date
+          type: string
+          nullable: false
+        - name: inventory_id
+          type: int
+          nullable: false
+        - name: customer_id
+          type: int
+          nullable: false
+        - name: return_date
+          type: string
+          nullable: true
+        - name: staff_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: rental_idx_fk_staff_id
+          fields:
+            - staff_id
+        - name: rental_idx_fk_customer_id
+          fields:
+            - customer_id
+        - name: rental_idx_fk_inventory_id
+          fields:
+            - inventory_id
+        - name: uq_rental_14
+          fields:
+            - rental_date
+            - inventory_id
+            - customer_id
+          unique: true
+    foreign_keys:
+        - name: rental_fk_0
+          fields:
+            - customer_id
+          referenced_collection: customer
+          referenced_fields:
+            - customer_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: rental_fk_1
+          fields:
+            - inventory_id
+          referenced_collection: inventory
+          referenced_fields:
+            - inventory_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: rental_fk_2
+          fields:
+            - staff_id
+          referenced_collection: staff
+          referenced_fields:
+            - staff_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

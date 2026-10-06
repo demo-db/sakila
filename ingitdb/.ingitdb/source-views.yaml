@@ -1,0 +1,63 @@
+- name: actor_info
+  columns:
+    - actor_id
+    - first_name
+    - last_name
+    - film_info
+  createsql: 'CREATE VIEW "actor_info" AS SELECT a.actor_id, a.first_name, a.last_name, (SELECT group_concat(category_info, ''; '') FROM ( SELECT c.name || '': '' || (SELECT group_concat(title, '', '') FROM ( SELECT f.title FROM film AS f JOIN film_category AS fc ON f.film_id = fc.film_id JOIN film_actor AS fa ON f.film_id = fa.film_id WHERE fc.category_id = c.category_id AND fa.actor_id = a.actor_id ORDER BY f.title )) AS category_info FROM category AS c JOIN film_category AS fc ON c.category_id = fc.category_id JOIN film_actor AS fa ON fc.film_id = fa.film_id WHERE fa.actor_id = a.actor_id GROUP BY c.category_id, c.name ORDER BY c.name )) AS film_info FROM actor AS a'
+- name: customer_list
+  columns:
+    - ID
+    - name
+    - address
+    - zip code
+    - phone
+    - city
+    - country
+    - notes
+    - SID
+  createsql: CREATE VIEW "customer_list" AS SELECT cu.customer_id AS ID, (cu.first_name || ' ' || cu.last_name) AS name, a.address AS address, a.postal_code AS "zip code", a.phone AS phone, city.city AS city, country.country AS country, CASE WHEN cu.active THEN 'active' ELSE '' END AS notes, cu.store_id AS SID FROM customer AS cu JOIN address AS a ON cu.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id
+- name: film_list
+  columns:
+    - FID
+    - title
+    - description
+    - category
+    - price
+    - length
+    - rating
+    - actors
+  createsql: CREATE VIEW "film_list" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat((actor.first_name || ' ' || actor.last_name), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name
+- name: nicer_but_slower_film_list
+  columns:
+    - FID
+    - title
+    - description
+    - category
+    - price
+    - length
+    - rating
+    - actors
+  createsql: CREATE VIEW "nicer_but_slower_film_list" AS SELECT film.film_id AS FID, film.title AS title, film.description AS description, category.name AS category, film.rental_rate AS price, film.length AS length, film.rating AS rating, group_concat(((upper(SUBSTR(actor.first_name,1,1)) || lower(SUBSTR(actor.first_name,2,LENGTH(actor.first_name))) || ' ' || (upper(SUBSTR(actor.last_name,1,1)) || lower(SUBSTR(actor.last_name,2,LENGTH(actor.last_name)))))), ', ') AS actors FROM film LEFT JOIN film_category ON film_category.film_id = film.film_id LEFT JOIN category ON category.category_id = film_category.category_id LEFT JOIN film_actor ON film.film_id = film_actor.film_id LEFT JOIN actor ON film_actor.actor_id = actor.actor_id GROUP BY film.film_id, category.name
+- name: sales_by_film_category
+  columns:
+    - category
+    - total_sales
+  createsql: CREATE VIEW "sales_by_film_category" AS SELECT c.name AS category , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN film AS f ON i.film_id = f.film_id INNER JOIN film_category AS fc ON f.film_id = fc.film_id INNER JOIN category AS c ON fc.category_id = c.category_id GROUP BY c.name ORDER BY total_sales DESC
+- name: sales_by_store
+  columns:
+    - store
+    - manager
+    - total_sales
+  createsql: CREATE VIEW "sales_by_store" AS SELECT (c.city || ',' || cy.country) AS store , (m.first_name || ' ' || m.last_name) AS manager , SUM(p.amount) AS total_sales FROM payment AS p INNER JOIN rental AS r ON p.rental_id = r.rental_id INNER JOIN inventory AS i ON r.inventory_id = i.inventory_id INNER JOIN store AS s ON i.store_id = s.store_id INNER JOIN address AS a ON s.address_id = a.address_id INNER JOIN city AS c ON a.city_id = c.city_id INNER JOIN country AS cy ON c.country_id = cy.country_id INNER JOIN staff AS m ON s.manager_staff_id = m.staff_id GROUP BY s.store_id ORDER BY cy.country, c.city
+- name: staff_list
+  columns:
+    - ID
+    - name
+    - address
+    - zip code
+    - phone
+    - city
+    - country
+    - SID
+  createsql: CREATE VIEW "staff_list" AS SELECT s.staff_id AS ID, (s.first_name || ' ' || s.last_name) AS name, a.address AS address, a.postal_code AS "zip code", a.phone AS phone, city.city AS city, country.country AS country, s.store_id AS SID FROM staff AS s JOIN address AS a ON s.address_id = a.address_id JOIN city ON a.city_id = city.city_id JOIN country ON city.country_id = country.country_id

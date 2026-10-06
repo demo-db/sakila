@@ -1,0 +1,91 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    address_id:
+        type: int
+        required: true
+    address:
+        type: string
+        required: true
+    address2:
+        type: string
+    district:
+        type: string
+        required: true
+    city_id:
+        type: int
+        required: true
+    postal_code:
+        type: string
+    phone:
+        type: string
+        required: true
+    location:
+        type: string
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - address_id
+    - address
+    - address2
+    - district
+    - city_id
+    - postal_code
+    - phone
+    - location
+    - last_update
+primary_key:
+    - address_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"address\" (address_id INTEGER PRIMARY KEY AUTOINCREMENT, address TEXT NOT NULL, address2 TEXT DEFAULT NULL, district TEXT NOT NULL, city_id INTEGER NOT NULL, postal_code TEXT DEFAULT NULL, phone TEXT NOT NULL, location BLOB NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (city_id) REFERENCES \"city\" (city_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"address_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"address","declaredType":"TEXT","notNull":true},{"name":"address2","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"district","declaredType":"TEXT","notNull":true},{"name":"city_id","declaredType":"INTEGER","notNull":true},{"name":"postal_code","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"phone","declaredType":"TEXT","notNull":true},{"name":"location","declaredType":"BLOB","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"address_idx_fk_city_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"address_idx_fk_city_id\" ON \"address\" (\"city_id\")","columns":[{"position":0,"name":"city_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: address_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: address
+          type: string
+          nullable: false
+        - name: address2
+          type: string
+          nullable: true
+        - name: district
+          type: string
+          nullable: false
+        - name: city_id
+          type: int
+          nullable: false
+        - name: postal_code
+          type: string
+          nullable: true
+        - name: phone
+          type: string
+          nullable: false
+        - name: location
+          type: bytes
+          nullable: false
+          encoding: base64
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: address_idx_fk_city_id
+          fields:
+            - city_id
+    foreign_keys:
+        - name: address_fk_0
+          fields:
+            - city_id
+          referenced_collection: city
+          referenced_fields:
+            - city_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

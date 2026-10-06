@@ -1,0 +1,70 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    inventory_id:
+        type: int
+        required: true
+    film_id:
+        type: int
+        required: true
+    store_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - inventory_id
+    - film_id
+    - store_id
+    - last_update
+primary_key:
+    - inventory_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"inventory\" (inventory_id INTEGER PRIMARY KEY AUTOINCREMENT, film_id INTEGER NOT NULL, store_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"inventory_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"film_id","declaredType":"INTEGER","notNull":true},{"name":"store_id","declaredType":"INTEGER","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"inventory_idx_store_id_film_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"inventory_idx_store_id_film_id\" ON \"inventory\" (\"store_id\", \"film_id\")","columns":[{"position":0,"name":"store_id","key":true,"collation":"BINARY"},{"position":1,"name":"film_id","key":true,"collation":"BINARY"},{"position":2,"key":false,"collation":"BINARY"}]},{"name":"inventory_idx_fk_film_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"inventory_idx_fk_film_id\" ON \"inventory\" (\"film_id\")","columns":[{"position":0,"name":"film_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: inventory_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: film_id
+          type: int
+          nullable: false
+        - name: store_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: inventory_idx_store_id_film_id
+          fields:
+            - store_id
+            - film_id
+        - name: inventory_idx_fk_film_id
+          fields:
+            - film_id
+    foreign_keys:
+        - name: inventory_fk_0
+          fields:
+            - film_id
+          referenced_collection: film
+          referenced_fields:
+            - film_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: inventory_fk_1
+          fields:
+            - store_id
+          referenced_collection: store
+          referenced_fields:
+            - store_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
