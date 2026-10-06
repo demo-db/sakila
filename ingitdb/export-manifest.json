@@ -20,26 +20,67 @@
         "actor_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"actor\" (actor_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+      "indexes": [
+        {
+          "name": "actor_idx_actor_last_name",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"actor_idx_actor_last_name\" ON \"actor\" (\"last_name\")",
+          "columns": [
+            "last_name"
+          ],
+          "key_columns": [
+            "last_name"
+          ]
+        }
+      ],
       "foreignKeys": [],
+      "foreignKeyConstraints": [],
       "columns": [
         {
           "nativeName": "actor_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "first_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -56,59 +97,148 @@
         "address_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"address\" (address_id INTEGER PRIMARY KEY AUTOINCREMENT, address TEXT NOT NULL, address2 TEXT DEFAULT NULL, district TEXT NOT NULL, city_id INTEGER NOT NULL, postal_code TEXT DEFAULT NULL, phone TEXT NOT NULL, location BLOB NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (city_id) REFERENCES \"city\" (city_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "address_idx_fk_city_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"address_idx_fk_city_id\" ON \"address\" (\"city_id\")",
+          "columns": [
+            "city_id"
+          ],
+          "key_columns": [
+            "city_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "city",
           "from": "city_id",
-          "to": "city_id"
+          "to": "city_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "city_id"
+          ],
+          "referencedTable": "city",
+          "referencedColumns": [
+            "city_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "address_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "address",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "address2",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "district",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "city_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "postal_code",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "phone",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "location",
           "declaredType": "BLOB",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "base64"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -125,21 +255,42 @@
         "category_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"category\" (category_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+      "indexes": [],
       "foreignKeys": [],
+      "foreignKeyConstraints": [],
       "columns": [
         {
           "nativeName": "category_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -156,34 +307,93 @@
         "city_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"city\" (city_id INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT NOT NULL, country_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (country_id) REFERENCES \"country\" (country_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "city_idx_fk_country_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"city_idx_fk_country_id\" ON \"city\" (\"country_id\")",
+          "columns": [
+            "country_id"
+          ],
+          "key_columns": [
+            "country_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "country",
           "from": "country_id",
-          "to": "country_id"
+          "to": "country_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "country_id"
+          ],
+          "referencedTable": "country",
+          "referencedColumns": [
+            "country_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "city_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "city",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "country_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -200,21 +410,42 @@
         "country_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"country\" (country_id INTEGER PRIMARY KEY AUTOINCREMENT, country TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+      "indexes": [],
       "foreignKeys": [],
+      "foreignKeyConstraints": [],
       "columns": [
         {
           "nativeName": "country_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "country",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -231,66 +462,198 @@
         "customer_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"customer\" (customer_id INTEGER PRIMARY KEY AUTOINCREMENT, store_id INTEGER NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT DEFAULT NULL, address_id INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1, create_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "customer_idx_last_name",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"customer_idx_last_name\" ON \"customer\" (\"last_name\")",
+          "columns": [
+            "last_name"
+          ],
+          "key_columns": [
+            "last_name"
+          ]
+        },
+        {
+          "name": "customer_idx_fk_address_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"customer_idx_fk_address_id\" ON \"customer\" (\"address_id\")",
+          "columns": [
+            "address_id"
+          ],
+          "key_columns": [
+            "address_id"
+          ]
+        },
+        {
+          "name": "customer_idx_fk_store_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"customer_idx_fk_store_id\" ON \"customer\" (\"store_id\")",
+          "columns": [
+            "store_id"
+          ],
+          "key_columns": [
+            "store_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "store",
           "from": "store_id",
-          "to": "store_id"
+          "to": "store_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "address",
           "from": "address_id",
-          "to": "address_id"
+          "to": "address_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "store_id"
+          ],
+          "referencedTable": "store",
+          "referencedColumns": [
+            "store_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "address_id"
+          ],
+          "referencedTable": "address",
+          "referencedColumns": [
+            "address_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "customer_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "store_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "first_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "email",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "address_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "active",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "1",
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "create_date",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         }
       ],
@@ -307,86 +670,242 @@
         "film_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"film\" (film_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, description TEXT DEFAULT NULL, release_year TEXT DEFAULT NULL, language_id INTEGER NOT NULL, original_language_id INTEGER DEFAULT NULL, rental_duration INTEGER NOT NULL DEFAULT 3, rental_rate NUMERIC NOT NULL DEFAULT 4.99, length INTEGER DEFAULT NULL, replacement_cost NUMERIC NOT NULL DEFAULT 19.99, rating TEXT DEFAULT 'G', special_features TEXT DEFAULT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (original_language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "film_idx_fk_original_language_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"film_idx_fk_original_language_id\" ON \"film\" (\"original_language_id\")",
+          "columns": [
+            "original_language_id"
+          ],
+          "key_columns": [
+            "original_language_id"
+          ]
+        },
+        {
+          "name": "film_idx_fk_language_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"film_idx_fk_language_id\" ON \"film\" (\"language_id\")",
+          "columns": [
+            "language_id"
+          ],
+          "key_columns": [
+            "language_id"
+          ]
+        },
+        {
+          "name": "film_idx_title",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"film_idx_title\" ON \"film\" (\"title\")",
+          "columns": [
+            "title"
+          ],
+          "key_columns": [
+            "title"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "language",
           "from": "original_language_id",
-          "to": "language_id"
+          "to": "language_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "language",
           "from": "language_id",
-          "to": "language_id"
+          "to": "language_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "original_language_id"
+          ],
+          "referencedTable": "language",
+          "referencedColumns": [
+            "language_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "language_id"
+          ],
+          "referencedTable": "language",
+          "referencedColumns": [
+            "language_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "film_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "title",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "description",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "release_year",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "language_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "original_language_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "any",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "rental_duration",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "3",
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "rental_rate",
           "declaredType": "NUMERIC",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "4.99",
+          "ingitdbType": "float",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "length",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "int",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "replacement_cost",
           "declaredType": "NUMERIC",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "19.99",
+          "ingitdbType": "float",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "rating",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "'G'",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "special_features",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -404,36 +923,121 @@
         "film_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"film_actor\" (actor_id INTEGER NOT NULL, film_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (actor_id,film_id), FOREIGN KEY (actor_id) REFERENCES \"actor\" (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "film_actor_idx_fk_film_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"film_actor_idx_fk_film_id\" ON \"film_actor\" (\"film_id\")",
+          "columns": [
+            "film_id"
+          ],
+          "key_columns": [
+            "film_id"
+          ]
+        },
+        {
+          "name": "sqlite_autoindex_film_actor_1",
+          "unique": true,
+          "origin": "pk",
+          "partial": false,
+          "sql": null,
+          "columns": [
+            "actor_id",
+            "film_id"
+          ],
+          "key_columns": [
+            "actor_id",
+            "film_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "film",
           "from": "film_id",
-          "to": "film_id"
+          "to": "film_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "actor",
           "from": "actor_id",
-          "to": "actor_id"
+          "to": "actor_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "film_id"
+          ],
+          "referencedTable": "film",
+          "referencedColumns": [
+            "film_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "actor_id"
+          ],
+          "referencedTable": "actor",
+          "referencedColumns": [
+            "actor_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "actor_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "film_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 2,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -451,36 +1055,108 @@
         "category_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"film_category\" (film_id INTEGER NOT NULL, category_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (film_id, category_id), FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (category_id) REFERENCES \"category\" (category_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_film_category_1",
+          "unique": true,
+          "origin": "pk",
+          "partial": false,
+          "sql": null,
+          "columns": [
+            "film_id",
+            "category_id"
+          ],
+          "key_columns": [
+            "film_id",
+            "category_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "category",
           "from": "category_id",
-          "to": "category_id"
+          "to": "category_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "film",
           "from": "film_id",
-          "to": "film_id"
+          "to": "film_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "category_id"
+          ],
+          "referencedTable": "category",
+          "referencedColumns": [
+            "category_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "film_id"
+          ],
+          "referencedTable": "film",
+          "referencedColumns": [
+            "film_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "film_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "category_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 2,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -497,21 +1173,42 @@
         "film_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"film_text\" (film_id INTEGER NOT NULL, title TEXT NOT NULL, description TEXT, PRIMARY KEY (film_id))",
+      "indexes": [],
       "foreignKeys": [],
+      "foreignKeyConstraints": [],
       "columns": [
         {
           "nativeName": "film_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "title",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "description",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         }
       ],
@@ -528,41 +1225,132 @@
         "inventory_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"inventory\" (inventory_id INTEGER PRIMARY KEY AUTOINCREMENT, film_id INTEGER NOT NULL, store_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "inventory_idx_store_id_film_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"inventory_idx_store_id_film_id\" ON \"inventory\" (\"store_id\", \"film_id\")",
+          "columns": [
+            "store_id",
+            "film_id"
+          ],
+          "key_columns": [
+            "store_id",
+            "film_id"
+          ]
+        },
+        {
+          "name": "inventory_idx_fk_film_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"inventory_idx_fk_film_id\" ON \"inventory\" (\"film_id\")",
+          "columns": [
+            "film_id"
+          ],
+          "key_columns": [
+            "film_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "film",
           "from": "film_id",
-          "to": "film_id"
+          "to": "film_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "store",
           "from": "store_id",
-          "to": "store_id"
+          "to": "store_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "film_id"
+          ],
+          "referencedTable": "film",
+          "referencedColumns": [
+            "film_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "store_id"
+          ],
+          "referencedTable": "store",
+          "referencedColumns": [
+            "store_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "inventory_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "film_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "store_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -579,21 +1367,42 @@
         "language_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"language\" (language_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+      "indexes": [],
       "foreignKeys": [],
+      "foreignKeyConstraints": [],
       "columns": [
         {
           "nativeName": "language_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -610,63 +1419,187 @@
         "payment_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"payment\" (payment_id INTEGER PRIMARY KEY AUTOINCREMENT, customer_id INTEGER NOT NULL, staff_id INTEGER NOT NULL, rental_id INTEGER DEFAULT NULL, amount NUMERIC NOT NULL, payment_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (rental_id) REFERENCES \"rental\" (rental_id) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "payment_idx_fk_customer_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"payment_idx_fk_customer_id\" ON \"payment\" (\"customer_id\")",
+          "columns": [
+            "customer_id"
+          ],
+          "key_columns": [
+            "customer_id"
+          ]
+        },
+        {
+          "name": "payment_idx_fk_staff_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"payment_idx_fk_staff_id\" ON \"payment\" (\"staff_id\")",
+          "columns": [
+            "staff_id"
+          ],
+          "key_columns": [
+            "staff_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "staff",
           "from": "staff_id",
-          "to": "staff_id"
+          "to": "staff_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "customer",
           "from": "customer_id",
-          "to": "customer_id"
+          "to": "customer_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 2,
           "sequence": 0,
           "table": "rental",
           "from": "rental_id",
-          "to": "rental_id"
+          "to": "rental_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "SET NULL",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "staff_id"
+          ],
+          "referencedTable": "staff",
+          "referencedColumns": [
+            "staff_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "customer_id"
+          ],
+          "referencedTable": "customer",
+          "referencedColumns": [
+            "customer_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 2,
+          "localColumns": [
+            "rental_id"
+          ],
+          "referencedTable": "rental",
+          "referencedColumns": [
+            "rental_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "SET NULL",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "payment_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "customer_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "staff_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "rental_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "int",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "amount",
           "declaredType": "NUMERIC",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "any",
+          "exportRequired": true,
           "encoding": "sqlite-typed-json"
         },
         {
           "nativeName": "payment_date",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         }
       ],
@@ -683,63 +1616,217 @@
         "rental_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"rental\" (rental_id INTEGER PRIMARY KEY AUTOINCREMENT, rental_date TEXT NOT NULL, inventory_id INTEGER NOT NULL, customer_id INTEGER NOT NULL, return_date TEXT DEFAULT NULL, staff_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (inventory_id) REFERENCES \"inventory\" (inventory_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "rental_idx_fk_staff_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"rental_idx_fk_staff_id\" ON \"rental\" (\"staff_id\")",
+          "columns": [
+            "staff_id"
+          ],
+          "key_columns": [
+            "staff_id"
+          ]
+        },
+        {
+          "name": "rental_idx_fk_customer_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"rental_idx_fk_customer_id\" ON \"rental\" (\"customer_id\")",
+          "columns": [
+            "customer_id"
+          ],
+          "key_columns": [
+            "customer_id"
+          ]
+        },
+        {
+          "name": "rental_idx_fk_inventory_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"rental_idx_fk_inventory_id\" ON \"rental\" (\"inventory_id\")",
+          "columns": [
+            "inventory_id"
+          ],
+          "key_columns": [
+            "inventory_id"
+          ]
+        },
+        {
+          "name": "uq_rental_14",
+          "unique": true,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE UNIQUE INDEX \"uq_rental_14\" ON \"rental\" (\"rental_date\", \"inventory_id\", \"customer_id\")",
+          "columns": [
+            "rental_date",
+            "inventory_id",
+            "customer_id"
+          ],
+          "key_columns": [
+            "rental_date",
+            "inventory_id",
+            "customer_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "customer",
           "from": "customer_id",
-          "to": "customer_id"
+          "to": "customer_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "inventory",
           "from": "inventory_id",
-          "to": "inventory_id"
+          "to": "inventory_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 2,
           "sequence": 0,
           "table": "staff",
           "from": "staff_id",
-          "to": "staff_id"
+          "to": "staff_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "customer_id"
+          ],
+          "referencedTable": "customer",
+          "referencedColumns": [
+            "customer_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "inventory_id"
+          ],
+          "referencedTable": "inventory",
+          "referencedColumns": [
+            "inventory_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 2,
+          "localColumns": [
+            "staff_id"
+          ],
+          "referencedTable": "staff",
+          "referencedColumns": [
+            "staff_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "rental_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "rental_date",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "inventory_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "customer_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "return_date",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "staff_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -756,76 +1843,207 @@
         "staff_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"staff\" (staff_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, address_id INTEGER NOT NULL, picture BLOB DEFAULT NULL, email TEXT DEFAULT NULL, store_id INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1, username TEXT NOT NULL, password TEXT DEFAULT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (store_id) REFERENCES \"store\" (store_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "staff_idx_fk_address_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"staff_idx_fk_address_id\" ON \"staff\" (\"address_id\")",
+          "columns": [
+            "address_id"
+          ],
+          "key_columns": [
+            "address_id"
+          ]
+        },
+        {
+          "name": "staff_idx_fk_store_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"staff_idx_fk_store_id\" ON \"staff\" (\"store_id\")",
+          "columns": [
+            "store_id"
+          ],
+          "key_columns": [
+            "store_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "address",
           "from": "address_id",
-          "to": "address_id"
+          "to": "address_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "store",
           "from": "store_id",
-          "to": "store_id"
+          "to": "store_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "address_id"
+          ],
+          "referencedTable": "address",
+          "referencedColumns": [
+            "address_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "store_id"
+          ],
+          "referencedTable": "store",
+          "referencedColumns": [
+            "store_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "staff_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "first_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_name",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "address_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "picture",
           "declaredType": "BLOB",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "base64"
         },
         {
           "nativeName": "email",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "store_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "active",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "1",
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "username",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "password",
           "declaredType": "TEXT",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": true,
+          "defaultValue": "NULL",
+          "ingitdbType": "string",
+          "exportRequired": false,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],
@@ -842,41 +2060,130 @@
         "store_id"
       ],
       "transportId": "encoded-native-primary-key",
+      "sourceSql": "CREATE TABLE \"store\" (store_id INTEGER PRIMARY KEY AUTOINCREMENT, manager_staff_id INTEGER NOT NULL, address_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (manager_staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (address_id) REFERENCES \"address\" (address_id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+      "indexes": [
+        {
+          "name": "store_idx_fk_address_id",
+          "unique": false,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE INDEX \"store_idx_fk_address_id\" ON \"store\" (\"address_id\")",
+          "columns": [
+            "address_id"
+          ],
+          "key_columns": [
+            "address_id"
+          ]
+        },
+        {
+          "name": "store_idx_unique_manager",
+          "unique": true,
+          "origin": "c",
+          "partial": false,
+          "sql": "CREATE UNIQUE INDEX \"store_idx_unique_manager\" ON \"store\" (\"manager_staff_id\")",
+          "columns": [
+            "manager_staff_id"
+          ],
+          "key_columns": [
+            "manager_staff_id"
+          ]
+        }
+      ],
       "foreignKeys": [
         {
           "id": 0,
           "sequence": 0,
           "table": "address",
           "from": "address_id",
-          "to": "address_id"
+          "to": "address_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
         },
         {
           "id": 1,
           "sequence": 0,
           "table": "staff",
           "from": "manager_staff_id",
-          "to": "staff_id"
+          "to": "staff_id",
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE"
+        }
+      ],
+      "foreignKeyConstraints": [
+        {
+          "id": 0,
+          "localColumns": [
+            "address_id"
+          ],
+          "referencedTable": "address",
+          "referencedColumns": [
+            "address_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
+        },
+        {
+          "id": 1,
+          "localColumns": [
+            "manager_staff_id"
+          ],
+          "referencedTable": "staff",
+          "referencedColumns": [
+            "staff_id"
+          ],
+          "onUpdate": "CASCADE",
+          "onDelete": "RESTRICT",
+          "match": "NONE",
+          "enforced": false
         }
       ],
       "columns": [
         {
           "nativeName": "store_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": false,
+          "primaryKeyPosition": 1,
+          "sourceDeclaredNullable": true,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "manager_staff_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "address_id",
           "declaredType": "INTEGER",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": null,
+          "ingitdbType": "int",
+          "exportRequired": true,
           "encoding": "native-json"
         },
         {
           "nativeName": "last_update",
           "declaredType": "TEXT",
+          "sourceNotNull": true,
+          "primaryKeyPosition": 0,
+          "sourceDeclaredNullable": false,
+          "defaultValue": "CURRENT_TIMESTAMP",
+          "ingitdbType": "string",
+          "exportRequired": true,
           "encoding": "native-json"
         }
       ],

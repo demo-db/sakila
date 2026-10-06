@@ -2,22 +2,30 @@ record_file:
   name: records.json
   format: json
   type: "map[$record_id]map[$field_name]any"
+primary_key: ["customer_id"]
 columns:
   "customer_id":
-    type: any
+    type: int
+    required: true
   "store_id":
-    type: any
+    type: int
+    required: true
   "first_name":
-    type: any
+    type: string
+    required: true
   "last_name":
-    type: any
+    type: string
+    required: true
   "email":
-    type: any
+    type: string
   "address_id":
-    type: any
+    type: int
+    required: true
   "active":
-    type: any
+    type: int
+    required: true
   "create_date":
-    type: any
+    type: string
+    required: true
   "last_update":
-    type: any
+    type: string

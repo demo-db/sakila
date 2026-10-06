@@ -2,30 +2,38 @@ record_file:
   name: records.json
   format: json
   type: "map[$record_id]map[$field_name]any"
+primary_key: ["film_id"]
 columns:
   "film_id":
-    type: any
+    type: int
+    required: true
   "title":
-    type: any
+    type: string
+    required: true
   "description":
-    type: any
+    type: string
   "release_year":
-    type: any
+    type: string
   "language_id":
-    type: any
+    type: int
+    required: true
   "original_language_id":
     type: any
   "rental_duration":
-    type: any
+    type: int
+    required: true
   "rental_rate":
-    type: any
+    type: float
+    required: true
   "length":
-    type: any
+    type: int
   "replacement_cost":
-    type: any
+    type: float
+    required: true
   "rating":
-    type: any
+    type: string
   "special_features":
-    type: any
+    type: string
   "last_update":
-    type: any
+    type: string
+    required: true

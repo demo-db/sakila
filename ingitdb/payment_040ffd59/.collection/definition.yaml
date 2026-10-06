@@ -2,18 +2,24 @@ record_file:
   name: records.json
   format: json
   type: "map[$record_id]map[$field_name]any"
+primary_key: ["payment_id"]
 columns:
   "payment_id":
-    type: any
+    type: int
+    required: true
   "customer_id":
-    type: any
+    type: int
+    required: true
   "staff_id":
-    type: any
+    type: int
+    required: true
   "rental_id":
-    type: any
+    type: int
   "amount":
     type: any
+    required: true
   "payment_date":
-    type: any
+    type: string
+    required: true
   "last_update":
-    type: any
+    type: string
