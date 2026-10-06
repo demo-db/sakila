@@ -2,10 +2,14 @@ record_file:
   name: records.json
   format: json
   type: "map[$record_id]map[$field_name]any"
+primary_key: ["actor_id","film_id"]
 columns:
   "actor_id":
-    type: any
+    type: int
+    required: true
   "film_id":
-    type: any
+    type: int
+    required: true
   "last_update":
-    type: any
+    type: string
+    required: true
