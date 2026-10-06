@@ -1,0 +1,31 @@
+record_file:
+  name: records.json
+  format: json
+  type: "map[$record_id]map[$field_name]any"
+columns:
+  "film_id":
+    type: any
+  "title":
+    type: any
+  "description":
+    type: any
+  "release_year":
+    type: any
+  "language_id":
+    type: any
+  "original_language_id":
+    type: any
+  "rental_duration":
+    type: any
+  "rental_rate":
+    type: any
+  "length":
+    type: any
+  "replacement_cost":
+    type: any
+  "rating":
+    type: any
+  "special_features":
+    type: any
+  "last_update":
+    type: any

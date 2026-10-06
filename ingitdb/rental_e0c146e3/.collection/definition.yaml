@@ -1,0 +1,19 @@
+record_file:
+  name: records.json
+  format: json
+  type: "map[$record_id]map[$field_name]any"
+columns:
+  "rental_id":
+    type: any
+  "rental_date":
+    type: any
+  "inventory_id":
+    type: any
+  "customer_id":
+    type: any
+  "return_date":
+    type: any
+  "staff_id":
+    type: any
+  "last_update":
+    type: any

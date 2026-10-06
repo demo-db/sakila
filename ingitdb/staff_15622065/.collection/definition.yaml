@@ -1,0 +1,27 @@
+record_file:
+  name: records.json
+  format: json
+  type: "map[$record_id]map[$field_name]any"
+columns:
+  "staff_id":
+    type: any
+  "first_name":
+    type: any
+  "last_name":
+    type: any
+  "address_id":
+    type: any
+  "picture":
+    type: any
+  "email":
+    type: any
+  "store_id":
+    type: any
+  "active":
+    type: any
+  "username":
+    type: any
+  "password":
+    type: any
+  "last_update":
+    type: any
