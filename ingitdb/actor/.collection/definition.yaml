@@ -1,0 +1,47 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    actor_id:
+        type: int
+        required: true
+    first_name:
+        type: string
+        required: true
+    last_name:
+        type: string
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - actor_id
+    - first_name
+    - last_name
+    - last_update
+primary_key:
+    - actor_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"actor\" (actor_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)","columns":[{"name":"actor_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"first_name","declaredType":"TEXT","notNull":true},{"name":"last_name","declaredType":"TEXT","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"actor_idx_actor_last_name","unique":false,"origin":"c","createSql":"CREATE INDEX \"actor_idx_actor_last_name\" ON \"actor\" (\"last_name\")","columns":[{"position":0,"name":"last_name","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: actor_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: first_name
+          type: string
+          nullable: false
+        - name: last_name
+          type: string
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: actor_idx_actor_last_name
+          fields:
+            - last_name

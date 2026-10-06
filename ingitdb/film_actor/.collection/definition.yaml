@@ -1,0 +1,59 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    actor_id:
+        type: int
+        required: true
+    film_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - actor_id
+    - film_id
+    - last_update
+primary_key:
+    - actor_id
+    - film_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"film_actor\" (actor_id INTEGER NOT NULL, film_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (actor_id,film_id), FOREIGN KEY (actor_id) REFERENCES \"actor\" (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"actor_id","declaredType":"INTEGER","notNull":true,"primaryKeyPosition":1},{"name":"film_id","declaredType":"INTEGER","notNull":true,"primaryKeyPosition":2},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"film_actor_idx_fk_film_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"film_actor_idx_fk_film_id\" ON \"film_actor\" (\"film_id\")","columns":[{"position":0,"name":"film_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"sqlite_autoindex_film_actor_1","unique":true,"origin":"pk","columns":[{"position":0,"name":"actor_id","key":true,"collation":"BINARY"},{"position":1,"name":"film_id","key":true,"collation":"BINARY"},{"position":2,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: actor_id
+          type: int
+          nullable: false
+        - name: film_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: film_actor_idx_fk_film_id
+          fields:
+            - film_id
+    foreign_keys:
+        - name: film_actor_fk_0
+          fields:
+            - film_id
+          referenced_collection: film
+          referenced_fields:
+            - film_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: film_actor_fk_1
+          fields:
+            - actor_id
+          referenced_collection: actor
+          referenced_fields:
+            - actor_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

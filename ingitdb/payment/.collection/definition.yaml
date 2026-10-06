@@ -1,0 +1,100 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    payment_id:
+        type: int
+        required: true
+    customer_id:
+        type: int
+        required: true
+    staff_id:
+        type: int
+        required: true
+    rental_id:
+        type: int
+    amount:
+        type: string
+        required: true
+    payment_date:
+        type: string
+        required: true
+    last_update:
+        type: string
+columns_order:
+    - payment_id
+    - customer_id
+    - staff_id
+    - rental_id
+    - amount
+    - payment_date
+    - last_update
+primary_key:
+    - payment_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"payment\" (payment_id INTEGER PRIMARY KEY AUTOINCREMENT, customer_id INTEGER NOT NULL, staff_id INTEGER NOT NULL, rental_id INTEGER DEFAULT NULL, amount NUMERIC NOT NULL, payment_date TEXT NOT NULL, last_update TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (rental_id) REFERENCES \"rental\" (rental_id) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (customer_id) REFERENCES \"customer\" (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (staff_id) REFERENCES \"staff\" (staff_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"payment_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"customer_id","declaredType":"INTEGER","notNull":true},{"name":"staff_id","declaredType":"INTEGER","notNull":true},{"name":"rental_id","declaredType":"INTEGER","notNull":false,"defaultSql":"NULL"},{"name":"amount","declaredType":"NUMERIC","notNull":true},{"name":"payment_date","declaredType":"TEXT","notNull":true},{"name":"last_update","declaredType":"TEXT","notNull":false,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"payment_idx_fk_customer_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"payment_idx_fk_customer_id\" ON \"payment\" (\"customer_id\")","columns":[{"position":0,"name":"customer_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"payment_idx_fk_staff_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"payment_idx_fk_staff_id\" ON \"payment\" (\"staff_id\")","columns":[{"position":0,"name":"staff_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    storage_class_files:
+        - source-storage-0001.jsonl
+    fields:
+        - name: payment_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: customer_id
+          type: int
+          nullable: false
+        - name: staff_id
+          type: int
+          nullable: false
+        - name: rental_id
+          type: int
+          nullable: true
+        - name: amount
+          type: decimal
+          nullable: false
+          encoding: decimal-string
+        - name: payment_date
+          type: string
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: true
+    indexes:
+        - name: payment_idx_fk_customer_id
+          fields:
+            - customer_id
+        - name: payment_idx_fk_staff_id
+          fields:
+            - staff_id
+    foreign_keys:
+        - name: payment_fk_0
+          fields:
+            - staff_id
+          referenced_collection: staff
+          referenced_fields:
+            - staff_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: payment_fk_1
+          fields:
+            - customer_id
+          referenced_collection: customer
+          referenced_fields:
+            - customer_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: payment_fk_2
+          fields:
+            - rental_id
+          referenced_collection: rental
+          referenced_fields:
+            - rental_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: SET NULL

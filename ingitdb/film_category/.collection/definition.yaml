@@ -1,0 +1,55 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    film_id:
+        type: int
+        required: true
+    category_id:
+        type: int
+        required: true
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - film_id
+    - category_id
+    - last_update
+primary_key:
+    - film_id
+    - category_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"film_category\" (film_id INTEGER NOT NULL, category_id INTEGER NOT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (film_id, category_id), FOREIGN KEY (film_id) REFERENCES \"film\" (film_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (category_id) REFERENCES \"category\" (category_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"film_id","declaredType":"INTEGER","notNull":true,"primaryKeyPosition":1},{"name":"category_id","declaredType":"INTEGER","notNull":true,"primaryKeyPosition":2},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"sqlite_autoindex_film_category_1","unique":true,"origin":"pk","columns":[{"position":0,"name":"film_id","key":true,"collation":"BINARY"},{"position":1,"name":"category_id","key":true,"collation":"BINARY"},{"position":2,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    fields:
+        - name: film_id
+          type: int
+          nullable: false
+        - name: category_id
+          type: int
+          nullable: false
+        - name: last_update
+          type: string
+          nullable: false
+    foreign_keys:
+        - name: film_category_fk_0
+          fields:
+            - category_id
+          referenced_collection: category
+          referenced_fields:
+            - category_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: film_category_fk_1
+          fields:
+            - film_id
+          referenced_collection: film
+          referenced_fields:
+            - film_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT

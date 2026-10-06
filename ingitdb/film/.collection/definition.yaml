@@ -1,0 +1,133 @@
+record_file:
+    name: records.json
+    format: json
+    type: map[$record_id]map[$field_name]any
+columns:
+    film_id:
+        type: int
+        required: true
+    title:
+        type: string
+        required: true
+    description:
+        type: string
+    release_year:
+        type: string
+    language_id:
+        type: int
+        required: true
+    original_language_id:
+        type: int
+    rental_duration:
+        type: int
+        required: true
+    rental_rate:
+        type: string
+        required: true
+    length:
+        type: int
+    replacement_cost:
+        type: string
+        required: true
+    rating:
+        type: string
+    special_features:
+        type: string
+    last_update:
+        type: string
+        required: true
+columns_order:
+    - film_id
+    - title
+    - description
+    - release_year
+    - language_id
+    - original_language_id
+    - rental_duration
+    - rental_rate
+    - length
+    - replacement_cost
+    - rating
+    - special_features
+    - last_update
+primary_key:
+    - film_id
+source_schema:
+    key_mode: source-primary-key
+    source_definition_json: '{"dialect":"sqlite","createSql":"CREATE TABLE \"film\" (film_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, description TEXT DEFAULT NULL, release_year TEXT DEFAULT NULL, language_id INTEGER NOT NULL, original_language_id INTEGER DEFAULT NULL, rental_duration INTEGER NOT NULL DEFAULT 3, rental_rate NUMERIC NOT NULL DEFAULT 4.99, length INTEGER DEFAULT NULL, replacement_cost NUMERIC NOT NULL DEFAULT 19.99, rating TEXT DEFAULT ''G'', special_features TEXT DEFAULT NULL, last_update TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY (original_language_id) REFERENCES \"language\" (language_id) ON DELETE RESTRICT ON UPDATE CASCADE)","columns":[{"name":"film_id","declaredType":"INTEGER","notNull":false,"primaryKeyPosition":1},{"name":"title","declaredType":"TEXT","notNull":true},{"name":"description","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"release_year","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"language_id","declaredType":"INTEGER","notNull":true},{"name":"original_language_id","declaredType":"INTEGER","notNull":false,"defaultSql":"NULL"},{"name":"rental_duration","declaredType":"INTEGER","notNull":true,"defaultSql":"3"},{"name":"rental_rate","declaredType":"NUMERIC","notNull":true,"defaultSql":"4.99"},{"name":"length","declaredType":"INTEGER","notNull":false,"defaultSql":"NULL"},{"name":"replacement_cost","declaredType":"NUMERIC","notNull":true,"defaultSql":"19.99"},{"name":"rating","declaredType":"TEXT","notNull":false,"defaultSql":"''G''"},{"name":"special_features","declaredType":"TEXT","notNull":false,"defaultSql":"NULL"},{"name":"last_update","declaredType":"TEXT","notNull":true,"defaultSql":"CURRENT_TIMESTAMP"}],"indexes":[{"name":"film_idx_fk_original_language_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"film_idx_fk_original_language_id\" ON \"film\" (\"original_language_id\")","columns":[{"position":0,"name":"original_language_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"film_idx_fk_language_id","unique":false,"origin":"c","createSql":"CREATE INDEX \"film_idx_fk_language_id\" ON \"film\" (\"language_id\")","columns":[{"position":0,"name":"language_id","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]},{"name":"film_idx_title","unique":false,"origin":"c","createSql":"CREATE INDEX \"film_idx_title\" ON \"film\" (\"title\")","columns":[{"position":0,"name":"title","key":true,"collation":"BINARY"},{"position":1,"key":false,"collation":"BINARY"}]}]}'
+    constraint_validation: provider-preflight-passed
+    relationship_comparison: provider-native
+    storage_class_files:
+        - source-storage-0001.jsonl
+    fields:
+        - name: film_id
+          type: int
+          nullable: false
+          auto_increment: true
+        - name: title
+          type: string
+          nullable: false
+        - name: description
+          type: string
+          nullable: true
+        - name: release_year
+          type: string
+          nullable: true
+        - name: language_id
+          type: int
+          nullable: false
+        - name: original_language_id
+          type: int
+          nullable: true
+        - name: rental_duration
+          type: int
+          nullable: false
+        - name: rental_rate
+          type: decimal
+          nullable: false
+          encoding: decimal-string
+        - name: length
+          type: int
+          nullable: true
+        - name: replacement_cost
+          type: decimal
+          nullable: false
+          encoding: decimal-string
+        - name: rating
+          type: string
+          nullable: true
+        - name: special_features
+          type: string
+          nullable: true
+        - name: last_update
+          type: string
+          nullable: false
+    indexes:
+        - name: film_idx_fk_original_language_id
+          fields:
+            - original_language_id
+        - name: film_idx_fk_language_id
+          fields:
+            - language_id
+        - name: film_idx_title
+          fields:
+            - title
+    foreign_keys:
+        - name: film_fk_0
+          fields:
+            - original_language_id
+          referenced_collection: language
+          referenced_fields:
+            - language_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
+        - name: film_fk_1
+          fields:
+            - language_id
+          referenced_collection: language
+          referenced_fields:
+            - language_id
+          source_enforcement: disabled
+          on_update: CASCADE
+          on_delete: RESTRICT
