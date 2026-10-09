@@ -154,12 +154,12 @@
       "bytes": 2755
     },
     "model/sakila.modelspec.hcl": {
-      "sha256": "d57906e385f79d52ca4cc0ee370267bb6ef5cb5f78244503718171bc398313e4",
-      "bytes": 6643
+      "sha256": "2115d82c9a6832fdadd09712702f140039366bdbfa083047431a4778fa734fc5",
+      "bytes": 6373
     },
     "model/sakila.modelspec.json": {
-      "sha256": "e60c2b1f4cfd490ce97939b1703b741d48758472170f3b54aedf6d7f4865b336",
-      "bytes": 8961
+      "sha256": "6b6e5b68d3f834b263b49f6ae2927be0d3f428edd4d1799e3f4f4da9fce14513",
+      "bytes": 8898
     },
     "ovdb-database.json": {
       "sha256": "a156ef4c3acf85a7cab92ba4ea1dbf38021da7aa481e5b892e29f4f573d5a411",
@@ -170,8 +170,8 @@
       "bytes": 1314
     },
     "schemas/ovdb-database-draft-1.schema.json": {
-      "sha256": "2424ef00acd462ab5a8abc546fe2d1fffbbb5397e312332aedc77b3e73109488",
-      "bytes": 5371
+      "sha256": "4af5dc5f48bce1bc2ba5cb6664dd2c28adcadd818c74da0e78fe428f6f6ec55b",
+      "bytes": 6001
     }
   }
 }

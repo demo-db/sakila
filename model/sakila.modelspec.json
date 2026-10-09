@@ -1,16 +1,16 @@
 {
-  "modelspec": "1.0-draft",
+  "modelspec": "1.0-draft-2",
   "module": {
     "id": "github.com/demo-db/sakila/sakila",
     "name": "sakila",
     "version": "0.1.0"
   },
-  "entities": {
+  "records": {
     "actor": {
       "key": [
         "actor_id"
       ],
-      "properties": {
+      "fields": {
         "actor_id": {
           "type": "int"
         },
@@ -32,7 +32,7 @@
       "key": [
         "address_id"
       ],
-      "properties": {
+      "fields": {
         "address_id": {
           "type": "int"
         },
@@ -49,7 +49,7 @@
         },
         "city_id": {
           "required": true,
-          "entity": "city"
+          "record": "city"
         },
         "postal_code": {
           "type": "string"
@@ -72,7 +72,7 @@
       "key": [
         "category_id"
       ],
-      "properties": {
+      "fields": {
         "category_id": {
           "type": "int"
         },
@@ -90,7 +90,7 @@
       "key": [
         "city_id"
       ],
-      "properties": {
+      "fields": {
         "city_id": {
           "type": "int"
         },
@@ -100,7 +100,7 @@
         },
         "country_id": {
           "required": true,
-          "entity": "country"
+          "record": "country"
         },
         "last_update": {
           "required": true,
@@ -112,7 +112,7 @@
       "key": [
         "country_id"
       ],
-      "properties": {
+      "fields": {
         "country_id": {
           "type": "int"
         },
@@ -130,13 +130,13 @@
       "key": [
         "customer_id"
       ],
-      "properties": {
+      "fields": {
         "customer_id": {
           "type": "int"
         },
         "store_id": {
           "required": true,
-          "entity": "store"
+          "record": "store"
         },
         "first_name": {
           "required": true,
@@ -151,7 +151,7 @@
         },
         "address_id": {
           "required": true,
-          "entity": "address"
+          "record": "address"
         },
         "active": {
           "required": true,
@@ -170,7 +170,7 @@
       "key": [
         "film_id"
       ],
-      "properties": {
+      "fields": {
         "film_id": {
           "type": "int"
         },
@@ -186,10 +186,10 @@
         },
         "language_id": {
           "required": true,
-          "entity": "language"
+          "record": "language"
         },
         "original_language_id": {
-          "entity": "language"
+          "record": "language"
         },
         "rental_duration": {
           "required": true,
@@ -223,14 +223,14 @@
         "actor_id",
         "film_id"
       ],
-      "properties": {
+      "fields": {
         "actor_id": {
           "required": true,
-          "entity": "actor"
+          "record": "actor"
         },
         "film_id": {
           "required": true,
-          "entity": "film"
+          "record": "film"
         },
         "last_update": {
           "required": true,
@@ -243,14 +243,14 @@
         "film_id",
         "category_id"
       ],
-      "properties": {
+      "fields": {
         "film_id": {
           "required": true,
-          "entity": "film"
+          "record": "film"
         },
         "category_id": {
           "required": true,
-          "entity": "category"
+          "record": "category"
         },
         "last_update": {
           "required": true,
@@ -262,7 +262,7 @@
       "key": [
         "film_id"
       ],
-      "properties": {
+      "fields": {
         "film_id": {
           "required": true,
           "type": "int"
@@ -280,17 +280,17 @@
       "key": [
         "inventory_id"
       ],
-      "properties": {
+      "fields": {
         "inventory_id": {
           "type": "int"
         },
         "film_id": {
           "required": true,
-          "entity": "film"
+          "record": "film"
         },
         "store_id": {
           "required": true,
-          "entity": "store"
+          "record": "store"
         },
         "last_update": {
           "required": true,
@@ -302,7 +302,7 @@
       "key": [
         "language_id"
       ],
-      "properties": {
+      "fields": {
         "language_id": {
           "type": "int"
         },
@@ -320,20 +320,20 @@
       "key": [
         "payment_id"
       ],
-      "properties": {
+      "fields": {
         "payment_id": {
           "type": "int"
         },
         "customer_id": {
           "required": true,
-          "entity": "customer"
+          "record": "customer"
         },
         "staff_id": {
           "required": true,
-          "entity": "staff"
+          "record": "staff"
         },
         "rental_id": {
-          "entity": "rental"
+          "record": "rental"
         },
         "amount": {
           "required": true,
@@ -352,7 +352,7 @@
       "key": [
         "rental_id"
       ],
-      "properties": {
+      "fields": {
         "rental_id": {
           "type": "int"
         },
@@ -362,18 +362,18 @@
         },
         "inventory_id": {
           "required": true,
-          "entity": "inventory"
+          "record": "inventory"
         },
         "customer_id": {
           "required": true,
-          "entity": "customer"
+          "record": "customer"
         },
         "return_date": {
           "type": "string"
         },
         "staff_id": {
           "required": true,
-          "entity": "staff"
+          "record": "staff"
         },
         "last_update": {
           "required": true,
@@ -385,7 +385,7 @@
       "key": [
         "staff_id"
       ],
-      "properties": {
+      "fields": {
         "staff_id": {
           "type": "int"
         },
@@ -399,7 +399,7 @@
         },
         "address_id": {
           "required": true,
-          "entity": "address"
+          "record": "address"
         },
         "picture": {
           "type": "document"
@@ -409,7 +409,7 @@
         },
         "store_id": {
           "required": true,
-          "entity": "store"
+          "record": "store"
         },
         "active": {
           "required": true,
@@ -432,17 +432,17 @@
       "key": [
         "store_id"
       ],
-      "properties": {
+      "fields": {
         "store_id": {
           "type": "int"
         },
         "manager_staff_id": {
           "required": true,
-          "entity": "staff"
+          "record": "staff"
         },
         "address_id": {
           "required": true,
-          "entity": "address"
+          "record": "address"
         },
         "last_update": {
           "required": true,
