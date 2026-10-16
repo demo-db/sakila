@@ -1,0 +1,60 @@
+{
+  "attribution": "Sakila sample database 1.5, Copyright (c) 2006, 2026, Oracle and/or its affiliates, New BSD licence (BSD-3-Clause), https://downloads.mysql.com/docs/sakila-db.zip",
+  "format": "demodb-dialect-scripts/v1",
+  "id": "sakila",
+  "scripts": {
+    "mysql": {
+      "inputs": {
+        "attribution": "Sakila sample database 1.5, Copyright (c) 2006, 2026, Oracle and/or its affiliates, New BSD licence (BSD-3-Clause), https://downloads.mysql.com/docs/sakila-db.zip",
+        "dialect": "mysql",
+        "edition": "DemoDB contract edition, identical to the SQLite/CSV/JSON",
+        "generator": {
+          "checksumsSha256": "19d91f8ded312b945095bc14e5bda6fad667f0913580c3d0903c582300a4d8db",
+          "tag": "v0.100.0"
+        },
+        "license": "BSD-3-Clause",
+        "name": "sakila",
+        "noticeSha256": "a47f4e7830165bf5ce87aca173daff961790bada40ded38b1e01cac04144c0c0",
+        "sqliteSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
+      },
+      "inputsSha256": "a6746b670e12fb24b37d843a41c31fd55b7552778f3227dbc55c029db6ade241",
+      "report": {
+        "bytes": 7726,
+        "path": "dialect-scripts/sakila.mysql.report.json",
+        "sha256": "5c76d27d60ad2362d0dc553c4c83007f0135caf4654bf0df2145bdba546ebac0",
+        "warnings": {
+          "default-translated": 15,
+          "key-type-bounded": 4,
+          "values-normalized": 3,
+          "view-not-carried": 7
+        }
+      },
+      "stored": {
+        "decodedBytes": 3455549,
+        "decodedSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
+        "files": [
+          {
+            "bytes": 3455549,
+            "path": "dialect-scripts/sakila.mysql.sql",
+            "sha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8"
+          }
+        ],
+        "mode": "plain"
+      },
+      "verification": {
+        "date": "2026-10-16",
+        "differences": 0,
+        "engine": "MySQL 8.4.11 (official mysql:8.4 image)",
+        "image": "mysql:8.4@sha256:24989179f58856db763f418010c1169fecc944e3ec1ea7e921572d83eb070f70",
+        "loadedWith": "--default-character-set=utf8mb4 --skip-commands --skip-system-command, stop at first error",
+        "rows": 47268,
+        "scriptSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
+        "secondLoadRefusedAtMarkerTable": true,
+        "tables": 16,
+        "valuesCompared": 292767,
+        "verifier": "datatug-cli internal/crossverify TestJourneyMySQL at v0.100.0, run locally over this exact script, loaded with the header's client flags and again with the plain client; reads source and target through Go drivers",
+        "verifierWarnings": 29
+      }
+    }
+  }
+}
