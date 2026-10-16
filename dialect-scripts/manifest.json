@@ -9,18 +9,19 @@
         "dialect": "mysql",
         "edition": "DemoDB contract edition, identical to the SQLite/CSV/JSON",
         "generator": {
-          "checksumsSha256": "c736ea434e107cdf0189c7f0b82b08e81c1475cb92e593d5aafc6c7b7b434f60",
-          "tag": "v0.97.1"
+          "checksumsSha256": "19d91f8ded312b945095bc14e5bda6fad667f0913580c3d0903c582300a4d8db",
+          "tag": "v0.100.0"
         },
         "license": "BSD-3-Clause",
         "name": "sakila",
+        "noticeSha256": "a47f4e7830165bf5ce87aca173daff961790bada40ded38b1e01cac04144c0c0",
         "sqliteSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
       },
-      "inputsSha256": "521016ea64bfa5ad5bf8c2fa3f0d2da17f5984e5471eb285b3ecccc688719b93",
+      "inputsSha256": "a6746b670e12fb24b37d843a41c31fd55b7552778f3227dbc55c029db6ade241",
       "report": {
-        "bytes": 7725,
+        "bytes": 7726,
         "path": "dialect-scripts/sakila.mysql.report.json",
-        "sha256": "530d7d17b8aa3baf68c86fa79e05e535faada79e7d233c2e2ef2d52728629f07",
+        "sha256": "5c76d27d60ad2362d0dc553c4c83007f0135caf4654bf0df2145bdba546ebac0",
         "warnings": {
           "default-translated": 15,
           "key-type-bounded": 4,
@@ -29,13 +30,13 @@
         }
       },
       "stored": {
-        "decodedBytes": 3453789,
-        "decodedSha256": "5da2c324748815319c172cf18a07083acdca54a70931893a47efd3855f3d5fdd",
+        "decodedBytes": 3455549,
+        "decodedSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
         "files": [
           {
-            "bytes": 3453789,
+            "bytes": 3455549,
             "path": "dialect-scripts/sakila.mysql.sql",
-            "sha256": "5da2c324748815319c172cf18a07083acdca54a70931893a47efd3855f3d5fdd"
+            "sha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8"
           }
         ],
         "mode": "plain"
@@ -45,13 +46,13 @@
         "differences": 0,
         "engine": "MySQL 8.4.11 (official mysql:8.4 image)",
         "image": "mysql:8.4@sha256:24989179f58856db763f418010c1169fecc944e3ec1ea7e921572d83eb070f70",
-        "loadedWith": "mysql client of the same image, --default-character-set=utf8mb4 --skip-commands --skip-system-command, stop at first error",
+        "loadedWith": "--default-character-set=utf8mb4 --skip-commands --skip-system-command, stop at first error",
         "rows": 47268,
-        "scriptSha256": "5da2c324748815319c172cf18a07083acdca54a70931893a47efd3855f3d5fdd",
+        "scriptSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
         "secondLoadRefusedAtMarkerTable": true,
         "tables": 16,
         "valuesCompared": 292767,
-        "verifier": "datatug-cli internal/crossverify TestJourneyMySQL at v0.97.1, run locally over this exact script; reads source and target through Go drivers",
+        "verifier": "datatug-cli internal/crossverify TestJourneyMySQL at v0.100.0, run locally over this exact script, loaded with the header's client flags and again with the plain client; reads source and target through Go drivers",
         "verifierWarnings": 29
       }
     }
