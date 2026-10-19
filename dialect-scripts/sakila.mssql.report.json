@@ -1,0 +1,390 @@
+{
+  "dataset": "sakila",
+  "dialect": "mssql",
+  "format": "demodb-dialect-report/v1",
+  "generator": "v0.103.4",
+  "tables": [
+    {
+      "columns": 4,
+      "name": "actor",
+      "rows": 200
+    },
+    {
+      "columns": 9,
+      "name": "address",
+      "rows": 603
+    },
+    {
+      "columns": 3,
+      "name": "category",
+      "rows": 16
+    },
+    {
+      "columns": 4,
+      "name": "city",
+      "rows": 600
+    },
+    {
+      "columns": 3,
+      "name": "country",
+      "rows": 109
+    },
+    {
+      "columns": 9,
+      "name": "customer",
+      "rows": 599
+    },
+    {
+      "columns": 13,
+      "name": "film",
+      "rows": 1000
+    },
+    {
+      "columns": 3,
+      "name": "film_actor",
+      "rows": 5462
+    },
+    {
+      "columns": 3,
+      "name": "film_category",
+      "rows": 1000
+    },
+    {
+      "columns": 3,
+      "name": "film_text",
+      "rows": 1000
+    },
+    {
+      "columns": 4,
+      "name": "inventory",
+      "rows": 4581
+    },
+    {
+      "columns": 3,
+      "name": "language",
+      "rows": 6
+    },
+    {
+      "columns": 7,
+      "name": "payment",
+      "rows": 16044
+    },
+    {
+      "columns": 7,
+      "name": "rental",
+      "rows": 16044
+    },
+    {
+      "columns": 11,
+      "name": "staff",
+      "rows": 2
+    },
+    {
+      "columns": 4,
+      "name": "store",
+      "rows": 2
+    }
+  ],
+  "totals": {
+    "checkConstraints": 0,
+    "columns": 90,
+    "foreignKeys": 22,
+    "indexes": 22,
+    "primaryKeys": 16,
+    "rows": 47268,
+    "tables": 16,
+    "uniqueConstraints": 0
+  },
+  "warnings": [
+    {
+      "kind": "key-type-bounded",
+      "message": "a key column is carried as NVARCHAR(255) (declared \"TEXT\"): SQL Server cannot index an unbounded type; its longest value is 12",
+      "object": "actor.last_name"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "actor.last_update"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "actor_info"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "address(city_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "address.last_update"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "category.last_update"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "city(country_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "city.last_update"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "country.last_update"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "customer(address_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "customer(store_id)"
+    },
+    {
+      "kind": "key-type-bounded",
+      "message": "a key column is carried as NVARCHAR(255) (declared \"TEXT\"): SQL Server cannot index an unbounded type; its longest value is 12",
+      "object": "customer.last_name"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "customer.last_update"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "customer_list"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film(language_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of language reaches film by two paths): the key is carried with NO ACTION",
+      "object": "film(language_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film(original_language_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "film.last_update"
+    },
+    {
+      "kind": "values-normalized",
+      "message": "1000 REAL value(s) are written as the exact decimal of their shortest spelling, for example 0.99: SQLite stores a binary float, DECIMAL(3,2) an exact decimal",
+      "object": "film.rental_rate"
+    },
+    {
+      "kind": "values-normalized",
+      "message": "1000 REAL value(s) are written as the exact decimal of their shortest spelling, for example 20.99: SQLite stores a binary float, DECIMAL(4,2) an exact decimal",
+      "object": "film.replacement_cost"
+    },
+    {
+      "kind": "key-type-bounded",
+      "message": "a key column is carried as NVARCHAR(255) (declared \"TEXT\"): SQL Server cannot index an unbounded type; its longest value is 27",
+      "object": "film.title"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film_actor(actor_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film_actor(film_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "film_actor.last_update"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film_category(category_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "film_category(film_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "film_category.last_update"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "film_list"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "inventory(film_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "inventory(store_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "inventory.last_update"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "language.last_update"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "nicer_but_slower_film_list"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "payment(customer_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "payment(staff_id)"
+    },
+    {
+      "kind": "values-normalized",
+      "message": "16020 REAL and 24 INTEGER value(s) share one DECIMAL(4,2) column: SQLite keeps them apart (5 and 5.0), DECIMAL(4,2) does not; each REAL is written as the exact decimal of its shortest spelling, for example 2.99",
+      "object": "payment.amount"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "payment.last_update"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "rental(customer_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of address reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "rental(customer_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "rental(inventory_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of store reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "rental(inventory_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "rental(staff_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of staff reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "rental(staff_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "rental.last_update"
+    },
+    {
+      "kind": "key-type-bounded",
+      "message": "a key column is carried as NVARCHAR(255) (declared \"TEXT\"): SQL Server cannot index an unbounded type; its longest value is 19",
+      "object": "rental.rental_date"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "sales_by_film_category"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "sales_by_store"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "staff(address_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of address reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "staff(address_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "staff(store_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of store reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "staff(store_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "staff.last_update"
+    },
+    {
+      "kind": "view-not-carried",
+      "message": "views are written in the SQL dialect of their engine and are not translated across engines",
+      "object": "staff_list"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "store(address_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of address reaches customer by two paths): the key is carried with NO ACTION",
+      "object": "store(address_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON DELETE RESTRICT does not exist in T-SQL: the key is carried with NO ACTION, which refuses the same change when the key is not deferred",
+      "object": "store(manager_staff_id)"
+    },
+    {
+      "kind": "fk-action-not-carried",
+      "message": "ON UPDATE CASCADE is not carried: SQL Server refuses a foreign key that makes a cycle or a second cascade path (an UPDATE of a row of staff reaches payment by two paths): the key is carried with NO ACTION",
+      "object": "store(manager_staff_id)"
+    },
+    {
+      "kind": "default-translated",
+      "message": "default CURRENT_TIMESTAMP on a text column is written as a UTC expression in the same text format",
+      "object": "store.last_update"
+    }
+  ]
+}

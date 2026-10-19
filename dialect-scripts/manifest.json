@@ -3,25 +3,100 @@
   "format": "demodb-dialect-scripts/v1",
   "id": "sakila",
   "scripts": {
-    "mysql": {
+    "mssql": {
       "inputs": {
         "attribution": "Sakila sample database 1.5, Copyright (c) 2006, 2026, Oracle and/or its affiliates, New BSD licence (BSD-3-Clause), https://downloads.mysql.com/docs/sakila-db.zip",
-        "dialect": "mysql",
+        "dialect": "mssql",
         "edition": "DemoDB contract edition, identical to the SQLite/CSV/JSON",
         "generator": {
-          "checksumsSha256": "19d91f8ded312b945095bc14e5bda6fad667f0913580c3d0903c582300a4d8db",
-          "tag": "v0.100.0"
+          "checksumsSha256": "32c36126ec6c8961a7b493c21f18b63ecb0146faff84089d89566a659fd975fd",
+          "tag": "v0.103.4"
         },
         "license": "BSD-3-Clause",
         "name": "sakila",
         "noticeSha256": "a47f4e7830165bf5ce87aca173daff961790bada40ded38b1e01cac04144c0c0",
         "sqliteSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
       },
-      "inputsSha256": "a6746b670e12fb24b37d843a41c31fd55b7552778f3227dbc55c029db6ade241",
+      "inputsSha256": "f263b6cbfd370c0d4d89dd7271f2fb838c7de0f9ca8a2d35de9f67f9401b0e72",
+      "report": {
+        "bytes": 15479,
+        "path": "dialect-scripts/sakila.mssql.report.json",
+        "sha256": "9fd7d5f34c12c83747e23b8115c5d0a354a3a1cb312cd40c1b260d3da9f089a3",
+        "warnings": {
+          "default-translated": 15,
+          "fk-action-not-carried": 29,
+          "key-type-bounded": 4,
+          "values-normalized": 3,
+          "view-not-carried": 7
+        }
+      },
+      "stored": {
+        "decodedBytes": 3577264,
+        "decodedSha256": "85850c3d3cf2a4122939ae7f014ecc570c79f7209ce1745872265f04e16ded1a",
+        "files": [
+          {
+            "bytes": 3577264,
+            "path": "dialect-scripts/sakila.sqlserver.sql",
+            "sha256": "85850c3d3cf2a4122939ae7f014ecc570c79f7209ce1745872265f04e16ded1a"
+          }
+        ],
+        "mode": "plain"
+      },
+      "verification": {
+        "clientVersion": "Version 18.7.0001.1 Linux",
+        "date": "2026-10-19",
+        "differences": 0,
+        "engine": "Microsoft SQL Server 2022 (RTM-CU27-GDR) (KB5126934) - 16.0.4305.5 (X64) / collation SQL_Latin1_General_CP1_CI_AS",
+        "image": "mcr.microsoft.com/mssql/server:2022-latest@sha256:cf8f0ab2ebe61feec2eed2629061a07d247f791c2a8ddda74a4ac9f06a291718",
+        "loadSeconds": 7.2,
+        "loadedWith": "-X -x -b -f 65001 -i, stop at first error",
+        "rows": 47268,
+        "scriptSha256": "85850c3d3cf2a4122939ae7f014ecc570c79f7209ce1745872265f04e16ded1a",
+        "secondLoadRefusedAtMarkerTable": true,
+        "tableRows": {
+          "actor": 200,
+          "address": 603,
+          "category": 16,
+          "city": 600,
+          "country": 109,
+          "customer": 599,
+          "film": 1000,
+          "film_actor": 5462,
+          "film_category": 1000,
+          "film_text": 1000,
+          "inventory": 4581,
+          "language": 6,
+          "payment": 16044,
+          "rental": 16044,
+          "staff": 2,
+          "store": 2
+        },
+        "tables": 16,
+        "valuesCompared": 292767,
+        "verifier": "datatug-cli internal/crossverify TestJourneyMSSQL at v0.103.4, run locally over this exact script, loaded with sqlcmd -X -x -b -f 65001 -i from the file inside the server container; reads source and target through Go drivers",
+        "verifierSeconds": 1.4,
+        "verifierWarnings": 58
+      }
+    },
+    "mysql": {
+      "inputs": {
+        "attribution": "Sakila sample database 1.5, Copyright (c) 2006, 2026, Oracle and/or its affiliates, New BSD licence (BSD-3-Clause), https://downloads.mysql.com/docs/sakila-db.zip",
+        "dialect": "mysql",
+        "edition": "DemoDB contract edition, identical to the SQLite/CSV/JSON",
+        "generator": {
+          "checksumsSha256": "32c36126ec6c8961a7b493c21f18b63ecb0146faff84089d89566a659fd975fd",
+          "tag": "v0.103.4"
+        },
+        "license": "BSD-3-Clause",
+        "name": "sakila",
+        "noticeSha256": "a47f4e7830165bf5ce87aca173daff961790bada40ded38b1e01cac04144c0c0",
+        "sqliteSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
+      },
+      "inputsSha256": "61580ec9ea3b9661f1c3dff887710ffe2e1692a5bb30646eec8af1eee897af8f",
       "report": {
         "bytes": 7726,
         "path": "dialect-scripts/sakila.mysql.report.json",
-        "sha256": "5c76d27d60ad2362d0dc553c4c83007f0135caf4654bf0df2145bdba546ebac0",
+        "sha256": "ff44cbe488e95fae60622d804fbae11513a1be3399f437a0f41a39c716a17028",
         "warnings": {
           "default-translated": 15,
           "key-type-bounded": 4,
@@ -31,29 +106,125 @@
       },
       "stored": {
         "decodedBytes": 3455549,
-        "decodedSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
+        "decodedSha256": "d52d8b381aa25e3129a030715548b2540460dcf0021b4d37037975fd468fab52",
         "files": [
           {
             "bytes": 3455549,
             "path": "dialect-scripts/sakila.mysql.sql",
-            "sha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8"
+            "sha256": "d52d8b381aa25e3129a030715548b2540460dcf0021b4d37037975fd468fab52"
           }
         ],
         "mode": "plain"
       },
       "verification": {
-        "date": "2026-10-16",
+        "clientVersion": "mysql  Ver 8.4.11 for Linux on aarch64 (MySQL Community Server - GPL)",
+        "date": "2026-10-19",
         "differences": 0,
-        "engine": "MySQL 8.4.11 (official mysql:8.4 image)",
+        "engine": "MySQL 8.4.11",
         "image": "mysql:8.4@sha256:24989179f58856db763f418010c1169fecc944e3ec1ea7e921572d83eb070f70",
+        "loadSeconds": 0.7,
         "loadedWith": "--default-character-set=utf8mb4 --skip-commands --skip-system-command, stop at first error",
         "rows": 47268,
-        "scriptSha256": "5a3d1edde07ad4ec1f5771870bce94bd2ac51669598a5f13cab7e94980b5eef8",
+        "scriptSha256": "d52d8b381aa25e3129a030715548b2540460dcf0021b4d37037975fd468fab52",
         "secondLoadRefusedAtMarkerTable": true,
+        "tableRows": {
+          "actor": 200,
+          "address": 603,
+          "category": 16,
+          "city": 600,
+          "country": 109,
+          "customer": 599,
+          "film": 1000,
+          "film_actor": 5462,
+          "film_category": 1000,
+          "film_text": 1000,
+          "inventory": 4581,
+          "language": 6,
+          "payment": 16044,
+          "rental": 16044,
+          "staff": 2,
+          "store": 2
+        },
         "tables": 16,
         "valuesCompared": 292767,
-        "verifier": "datatug-cli internal/crossverify TestJourneyMySQL at v0.100.0, run locally over this exact script, loaded with the header's client flags and again with the plain client; reads source and target through Go drivers",
+        "verifier": "datatug-cli internal/crossverify TestJourneyMySQL at v0.103.4, run locally over this exact script, loaded with the header's client flags and again with the plain client; reads source and target through Go drivers",
+        "verifierSeconds": 1,
         "verifierWarnings": 29
+      }
+    },
+    "oracle": {
+      "inputs": {
+        "attribution": "Sakila sample database 1.5, Copyright (c) 2006, 2026, Oracle and/or its affiliates, New BSD licence (BSD-3-Clause), https://downloads.mysql.com/docs/sakila-db.zip",
+        "dialect": "oracle",
+        "edition": "DemoDB contract edition, identical to the SQLite/CSV/JSON",
+        "generator": {
+          "checksumsSha256": "32c36126ec6c8961a7b493c21f18b63ecb0146faff84089d89566a659fd975fd",
+          "tag": "v0.103.4"
+        },
+        "license": "BSD-3-Clause",
+        "name": "sakila",
+        "noticeSha256": "a47f4e7830165bf5ce87aca173daff961790bada40ded38b1e01cac04144c0c0",
+        "sqliteSha256": "9bebeee50fecb1fee115c206a4f380f2f6d1f009e7796b18b8a8cfba7c810454"
+      },
+      "inputsSha256": "f54ea0d8147c3340efbbe73684b5eb0e143ac9c2afbf42fb3de4059b8b53653d",
+      "report": {
+        "bytes": 17773,
+        "path": "dialect-scripts/sakila.oracle.report.json",
+        "sha256": "37759e403b320ef7996005a13df229db7981cf154525fcc882813f249a2a5ceb",
+        "warnings": {
+          "default-translated": 15,
+          "fk-action-not-carried": 43,
+          "key-type-bounded": 4,
+          "values-normalized": 7,
+          "view-not-carried": 7
+        }
+      },
+      "stored": {
+        "decodedBytes": 3534713,
+        "decodedSha256": "14be936792fb9d80d181c8c06d3b48f1ee1dd42f2c7bb7480eb63c8d5ef778db",
+        "files": [
+          {
+            "bytes": 3534713,
+            "path": "dialect-scripts/sakila.oracle.sql",
+            "sha256": "14be936792fb9d80d181c8c06d3b48f1ee1dd42f2c7bb7480eb63c8d5ef778db"
+          }
+        ],
+        "mode": "plain"
+      },
+      "verification": {
+        "clientVersion": "SQL*Plus: Release 23.26.3.0.0 - Production Version 23.26.3.0.0",
+        "date": "2026-10-19",
+        "differences": 0,
+        "engine": "Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free / compatible 23.6.0 / AL32UTF8 / MAX_STRING_SIZE STANDARD",
+        "image": "gvenzl/oracle-free:23-slim@sha256:6d61d267a3b978c24c5ac1790e62e927416a0aec446bd86e4b3a1527562757bd",
+        "loadSeconds": 5,
+        "loadedWith": "NLS_LANG=.AL32UTF8 sqlplus -L -S, stop at first error",
+        "rows": 47268,
+        "scriptSha256": "14be936792fb9d80d181c8c06d3b48f1ee1dd42f2c7bb7480eb63c8d5ef778db",
+        "secondLoadRefusedAtMarkerTable": true,
+        "tableRows": {
+          "actor": 200,
+          "address": 603,
+          "category": 16,
+          "city": 600,
+          "country": 109,
+          "customer": 599,
+          "film": 1000,
+          "film_actor": 5462,
+          "film_category": 1000,
+          "film_text": 1000,
+          "inventory": 4581,
+          "language": 6,
+          "payment": 16044,
+          "rental": 16044,
+          "staff": 2,
+          "store": 2
+        },
+        "tables": 16,
+        "valuesCompared": 292767,
+        "verifier": "datatug-cli internal/crossverify TestJourneyOracle at v0.103.4, run locally over this exact script, loaded with NLS_LANG=.AL32UTF8 sqlplus -L -S from the file inside the server container; reads source and target through Go drivers",
+        "verifierSeconds": 1.5,
+        "verifierWarnings": 76
       }
     }
   }
